@@ -2425,4 +2425,7 @@
   'This branch has no table' => 'This branch has no table',
   'Select Branch' => 'Select Branch',
   'Supper User' => 'Supper User',
+  'Updated Successfully for IOS' => 'Updated Successfully for IOS',
+  'sessions' => 'Sessions',
+  'Assign_Earrand_Guy' => 'Assign Earrand Guy',
 );
