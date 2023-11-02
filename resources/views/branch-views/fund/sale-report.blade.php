@@ -1,6 +1,6 @@
 @extends('layouts.branch.app')
 
-@section('title', translate('Sale Report'))
+@section('title', translate('Funds Report'))
 
 @push('css_or_js')
 
@@ -13,7 +13,7 @@
             <h2 class="h1 mb-0 d-flex align-items-center gap-2">
                 <img width="20" class="avatar-img" src="{{asset('public/assets/admin/img/icons/sales.png')}}" alt="">
                 <span class="page-header-title">
-                    {{translate('Sale_Report')}}
+                    {{translate('Funds Report')}}
                 </span>
             </h2>
         </div>
@@ -33,12 +33,18 @@
                     <div class="media-body">
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                             <div class="">
-                                <h2 class="page-header-title">{{translate('sale')}} {{translate('report')}} {{translate('overview')}}</h2>
+                                <h2 class="page-header-title">{{translate('Funds Report')}} {{translate('overview')}}</h2>
 
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <span>{{translate('branch')}}:</span>
                                         <a href="#">{{auth('branch')->user()->name}}</a>
+                                    </div>
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <span>{{translate('wallet_balance')}}:</span>
+                                        <a href="#" class="text-success font-weight-bold">{{auth('branch')->user()->wallet_amount}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +65,7 @@
                 <form action="javascript:" id="search-form" method="POST">
                     @csrf
                     <div class="row g-2">
-                        <div class="col-sm-6 col-md-4">
+                        {{-- <div class="col-sm-6 col-md-4">
                             <select class="custom-select custom-select" name="branch_id" id="branch_id"
                                     required>
                                 <option selected disabled>{{translate('Select Restaurant')}}</option>
@@ -71,13 +77,16 @@
                                     {{ $loggedInBranch->name }}
                                 </option>
                             </select>
-                        </div>
-
-                        <div class="col-sm-6 col-md-3">
+                        </div> --}}
+                        @php
+                            $loggedInBranch = \App\Model\Branch::find(auth('branch')->id());
+                        @endphp
+                        <input type="hidden" name="branch_id" value="{{ $loggedInBranch->id }}">
+                        <div class="col-sm-6 col-md-5">
                             <input type="date" name="from" id="from_date"
                                     class="form-control" required>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-sm-6 col-md-5">
                             <input type="date" name="to" id="to_date"
                                     class="form-control" required>
                         </div>
@@ -112,7 +121,7 @@
                 <hr>
 
                 <div class="table-responsive datatable_wrapper_row mt-5" id="set-rows">
-                    @include('branch-views.report.partials._table',['data'=>[]])
+                    @include('branch-views.fund.partials._table',['data'=>[]])
                 </div>
             </div>
         </div>
@@ -123,7 +132,7 @@
     <script>
         $('#search-form').on('submit', function () {
             $.post({
-                url: "{{route('branch.report.sale-report-filter')}}",
+                url: "{{route('branch.funds.sale-report-filter')}}",
                 data: $('#search-form').serialize(),
 
                 beforeSend: function () {

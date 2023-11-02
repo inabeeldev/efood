@@ -282,7 +282,7 @@
                                             <div class="form-group">
                                                 <label class="input-label">{{translate('Select_Addons')}}</label>
                                                 <select name="addon_ids[]" class="form-control" id="choose_addons" multiple="multiple">
-                                                    @foreach(\App\Model\AddOn::orderBy('name')->get() as $addon)
+                                                    @foreach(\App\Model\AddOn::where('branch_id', auth('branch')->id())->orderBy('name')->get() as $addon)
                                                         <option value="{{$addon['id']}}">{{$addon['name']}}</option>
                                                     @endforeach
                                                 </select>
@@ -293,7 +293,7 @@
                                                 <select name="attribute_id[]" id="choice_attributes"
                                                         class="form-control"
                                                         multiple="multiple">
-                                                    @foreach(\App\Model\Attribute::orderBy('name')->get() as $attribute)
+                                                    @foreach(\App\Model\Attribute::where('branch_id', auth('branch')->id())->orderBy('name')->get() as $attribute)
                                                         <option value="{{$attribute['id']}}">{{$attribute['name']}}</option>
                                                     @endforeach
                                                 </select>

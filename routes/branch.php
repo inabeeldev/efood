@@ -235,6 +235,12 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('export-excel', 'OrderController@export_excel')->name('export-excel');
             Route::get('ajax-change-delivery-time-date/{order_id}', 'OrderController@ajax_change_delivery_time_date')->name('ajax-change-delivery-time-date');
         });
+        Route::group(['prefix' => 'funds', 'as' => 'funds.','middleware' => ['membership']], function () {
+            Route::get('funds-received', 'FundController@fundReceived')->name('received');
+            Route::post('sale-report-filter', 'ReportController@sale_filter')->name('sale-report-filter');
+            Route::get('export-sale-report', 'ReportController@export_sale_report')->name('export-sale-report');
+            Route::get('withdraw-funds', 'FundController@withdrawFund')->name('withdraw');
+        });
 
         Route::group(['prefix' => 'table/order', 'as' => 'table.order.'], function () {
             Route::get('list/{status}', 'TableOrderController@order_list')->name('list');

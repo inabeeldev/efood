@@ -49,7 +49,10 @@ class DashboardController extends Controller
 
 
         $order_statistics_chart = [];
-        $order_statistics_chart_data = Order::where(['order_status' => 'delivered'])
+        $order_statistics_chart_data = Order::where([
+            'order_status' => 'delivered',
+            'branch_id' => auth('branch')->id()
+        ])
             ->select(
                 DB::raw('(count(id)) as total'),
                 DB::raw('YEAR(created_at) year, MONTH(created_at) month')

@@ -33,6 +33,7 @@ class ReportController extends Controller
         }
 
         $orders = Order::where(['order_status'=>'delivered'])
+            ->where('branch_id', auth('branch')->id())
             ->when($request->from && $request->to , function ($q) use($from, $to) {
                 session()->put('from_date', $from);
                 session()->put('to_date', $to);
@@ -79,6 +80,7 @@ class ReportController extends Controller
 
     public function product_report()
     {
+        OrderDetail::with('product')->get();
         return view('branch-views.report.product-report');
     }
 

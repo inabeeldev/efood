@@ -231,15 +231,58 @@
                                 </li>
                             </ul>
                         </li>
-                        
-                            
- <li class="nav-item">
+
+
+
+                        <li class="nav-item">
+                            <small class="nav-subtitle" title="{{translate('Pages')}}">{{translate('Funds')}} {{translate('section')}}</small>
+                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                        </li>
+
+                        <!-- Pages -->
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('branch/orders/list*')?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
+                               title="{{translate('Funds')}}">
+                                <i class="tio-shopping-cart nav-icon"></i>
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                    {{translate('Funds')}}
+                                </span>
+                            </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                style="display: {{Request::is('branch/funds/funds-received')?'block':'none'}}">
+                                <li class="nav-item {{Request::is('branch/funds/funds-received')?'active':''}}">
+                                    <a class="nav-link" href="{{route('branch.funds.received')}}" title="">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate sidebar--badge-container">
+                                            {{translate('Received Funds')}}
+                                            {{-- <span class="badge badge-soft-info badge-pill ml-1">
+                                                {{\App\Model\Order::notPos()->notDineIn()->where(['branch_id'=>auth('branch')->id()])->count()}}
+                                            </span> --}}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{Request::is('branch/funds/withdraw-funds')?'active':''}}">
+                                    <a class="nav-link " href="{{route('branch.funds.withdraw')}}" title="">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate sidebar--badge-container">
+                                            {{translate('Withdraw Funds')}}
+                                            {{-- <span class="badge badge-soft-info badge-pill ml-1">
+                                                {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'pending','branch_id'=>auth('branch')->id()])->count()}}
+                                            </span> --}}
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                            <li class="nav-item">
                                 <small
                                     class="nav-subtitle">{{translate('product')}} {{translate('management')}}</small>
                                 <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                             </li>
 
- <!-- Pages -->
+                            <!-- Pages -->
                             <li class="navbar-vertical-aside-has-menu {{Request::is('branch/category*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
                                 >
@@ -324,7 +367,7 @@
                                 </ul>
                             </li>
                             <!-- End Pages -->
-                            
+
                             <li class="nav-item">
                                 <small
                                     class="nav-subtitle">{{translate('promotion')}} {{translate('management')}}</small>
@@ -332,13 +375,13 @@
                             </li>
 
                             <!-- BANNER -->
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('branch/banner*')?'active':''}}">
+                            {{-- <li class="navbar-vertical-aside-has-menu {{Request::is('branch/banner*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link" href="{{route('branch.banner.list')}}"
                                 >
                                     <i class="tio-image nav-icon"></i>
                                     <span
                                         class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('banner')}}</span>
-                                </a>
+                                </a> --}}
                                 {{--                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"--}}
                                 {{--                                    style="display: {{Request::is('branch/banner*')?'block':'none'}}">--}}
                                 {{--                                    <li class="nav-item {{Request::is('branch/banner/add-new')?'active':''}}">--}}
@@ -355,7 +398,7 @@
                                 {{--                                        </a>--}}
                                 {{--                                    </li>--}}
                                 {{--                                </ul>--}}
-                            </li>
+                            {{-- </li>
 
                             <!-- COUPON -->
                             <li class="navbar-vertical-aside-has-menu {{Request::is('branch/coupon*')?'active':''}}">
@@ -363,7 +406,7 @@
                                     <i class="tio-gift nav-icon"></i>
                                     <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('coupon')}}</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                             <!-- NOTIFICATION -->
                             <li class="navbar-vertical-aside-has-menu {{Request::is('branch/notification*')?'active':''}}">
@@ -399,7 +442,7 @@
                             <!--        </li>-->
                             <!--    </ul>-->
                             <!--</li>-->
-                            
+
                             {{--                        REPORT & ANALYTICS MANAGEMENT--}}
                         {{-- @if(Helpers::module_permission_check(MANAGEMENT_SECTION['report_and_analytics_management'])) --}}
                             <li class="nav-item">
@@ -424,15 +467,14 @@
                                                 class="text-truncate">{{translate('order')}} {{translate('report')}}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('branch/report/deliveryman-report')?'active':''}}">
+                                    {{-- <li class="nav-item {{Request::is('branch/report/deliveryman-report')?'active':''}}">
                                         <a class="nav-link " href="{{route('branch.report.deliveryman_report')}}"
                                         >
-{{--                                            <i class="tio-chart-bar-3 nav-icon"></i>--}}
                                             <i class="tio-chart-donut-2 nav-icon"></i>
                                             <span
                                                 class="text-truncate">{{translate('Earrand Guy Report')}}</span>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                     <li class="nav-item {{Request::is('branch/report/product-report')?'active':''}}">
                                         <a class="nav-link " href="{{route('branch.report.product-report')}}"
                                         >
@@ -452,9 +494,9 @@
                             <!-- End Pages -->
                         {{-- @endif --}}
 {{--                        REPORT & ANALYTICS MANAGEMENT END--}}
-                            
+
                         <!-- End Pages -->
-                        
+
                         <!-- <li class="nav-item">-->
                         <!--        <small class="nav-subtitle"-->
                         <!--               title="Layouts">{{translate('Help_&_Support_Section')}}</small>-->
@@ -492,10 +534,10 @@
                                 </span>
                             </a>
                         </li>
-                        
-                        
-                        
-                         <li class="nav-item {{(Request::is('branch/employee*') || Request::is('branch/custom-role*'))?'scroll-here':''}}">
+
+
+
+                         {{-- <li class="nav-item {{(Request::is('branch/employee*') || Request::is('branch/custom-role*'))?'scroll-here':''}}">
                                 <small class="nav-subtitle">{{translate('user_management')}}</small>
                                 <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                             </li>
@@ -522,8 +564,8 @@
                                     </li>
 
                                 </ul>
-                            </li>
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('branch/customer/subscribed-email*')?'active':''}}">
+                            </li> --}}
+                            {{-- <li class="navbar-vertical-aside-has-menu {{Request::is('branch/customer/subscribed-email*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    href="{{route('branch.customer.subscribed_emails')}}">
                                     <i class="tio-email-outlined nav-icon"></i>
@@ -531,8 +573,8 @@
                                         {{translate('Subscribed Emails')}}
                                     </span>
                                 </a>
-                            </li>
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('branch/delivery-man*')? 'active' : ''}}">
+                            </li> --}}
+                            {{-- <li class="navbar-vertical-aside-has-menu {{Request::is('branch/delivery-man*')? 'active' : ''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
                                     <i class="tio-user nav-icon"></i>
                                     <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
@@ -558,13 +600,13 @@
                                             <span class="text-truncate">{{translate('Earrand_Guy_Reviews')}}</span>
                                         </a>
                                     </li>
-                                    
-                                    
+
+
 
                                 </ul>
-                            </li>
+                            </li> --}}
                             <!-- Pages -->
-                            
+
                              <li class="navbar-vertical-aside-has-menu {{Request::is('branch/reservation*') || Request::is('branch/reservation*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:" title="{{translate('Reservations')}}">
                                     <i class="tio-incognito nav-icon"></i>
@@ -721,7 +763,7 @@
                                 </li>
                             </ul>
                         </li>
-                        
+
 
                         <li class="nav-item">
                             <small
@@ -753,12 +795,12 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <small class="nav-subtitle">{{translate('system')}} {{translate('setting')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                        </li>
+                        </li> --}}
                         <!-- Business_Setup -->
-                        <li class="navbar-vertical-aside-has-menu {{Request::is('branch/business-settings/restaurant*')?'active':''}}">
+                        {{-- <li class="navbar-vertical-aside-has-menu {{Request::is('branch/business-settings/restaurant*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link" href="{{route('branch.business-settings.restaurant.restaurant-setup')}}">
                                 <i class="tio-settings nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Business_Setup')}}</span>
@@ -781,12 +823,12 @@
                                 <a target="_BLANK" href="#" class="p-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
                                 </a>
-                                
+
                             </div>
                             <!--<div class="row justify-content-center p-3"><a target="_BLANK" href="google.com">-->
                             <!--    <i class="fa fa-facebook"></i>-->
                             <!--</div>-->
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
                 <!-- End Content -->

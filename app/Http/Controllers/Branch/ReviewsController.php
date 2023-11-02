@@ -11,7 +11,12 @@ use Illuminate\Http\Request;
 class ReviewsController extends Controller
 {
     public function list(){
-        $reviews=Review::with(['product','customer'])->latest()->paginate(Helpers::getPagination());
+        $reviews = Review::with(['product', 'customer'])
+                    ->whereHas('product', function ($query) {
+                        $query->where('branch_id', '=', auth('branch')->id());
+                    })
+                    ->latest()
+                    ->paginate(Helpers::getPagination());
         return view('branch-views.reviews.list',compact('reviews'));
     }
 

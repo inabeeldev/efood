@@ -60,7 +60,7 @@
                             <select class="custom-select" name="branch_id" id="branch_id"
                                     required>
                                 <option selected value="all">{{translate('all')}}</option>
-                                @foreach(\App\Model\Branch::where('branch_id',auth('branch')->id())->get() as $branch)
+                                @foreach(\App\Model\Branch::where('id',auth('branch')->id())->get() as $branch)
                                     <option
                                         value="{{$branch['id']}}" {{session('branch_filter')==$branch['id']?'selected':''}}>{{$branch['name']}}</option>
                                 @endforeach
@@ -73,7 +73,7 @@
                                 <option disabled>---{{translate('select')}} {{translate('product')}}---</option>
                                 <option selected value="all">{{translate('all')}}</option>
 
-                                @foreach(\App\Model\Product::where('branch_id',auth('branch')->id())get() as $product)
+                                @foreach(\App\Model\Product::where('branch_id',auth('branch')->id())->get() as $product)
                                     <option
                                         value="{{$product['id']}}">
                                         {{$product['name']}}

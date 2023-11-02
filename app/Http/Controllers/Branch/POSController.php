@@ -24,13 +24,13 @@ class POSController extends Controller
     public function index(Request $request)
     {
         $category = $request->query('category_id', 0);
-        $categories = Category::active()->get();
+        $categories = Category::active()->where('branch_id' , auth('branch')->id())->get();
         $keyword = $request->keyword;
         $key = explode(' ', $keyword);
         $selected_customer =User::where('id', session('customer_id'))->first();
         $selected_table =Table::where('id', session('table_id'))->first();
 
-        $products = Product::
+        $products = Product::where('branch_id' , auth('branch')->id())->
         when($request->has('category_id') && $request['category_id'] != 0, function ($query) use ($request) {
             $query->whereJsonContains('category_ids', [['id' => (string)$request['category_id']]]);
         })

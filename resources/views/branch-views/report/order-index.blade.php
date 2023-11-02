@@ -97,14 +97,14 @@
                     @php
                         $from = session('from_date');
                         $to = session('to_date');
-                        $total=\App\Model\Order::whereBetween('created_at', [$from, $to])->count();
+                        $total=\App\Model\Order::where('branch_id', auth('branch')->id())->whereBetween('created_at', [$from, $to])->count();
                         if($total==0){
                         $total=.01;
                         }
                     @endphp
                     <div class="col-sm-6 col-lg-3">
                         @php
-                            $delivered=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->count()
+                            $delivered=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->count()
                         @endphp
                         <!-- Card -->
                         <div class="card card-sm">
@@ -153,7 +153,7 @@
 
                     <div class="col-sm-6 col-lg-3">
                         @php
-                            $returned=\App\Model\Order::where(['order_status'=>'returned'])->whereBetween('created_at', [$from, $to])->count()
+                            $returned=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'returned'])->whereBetween('created_at', [$from, $to])->count()
                         @endphp
                         <!-- Card -->
                         <div class="card card-sm">
@@ -202,7 +202,7 @@
 
                     <div class="col-sm-6 col-lg-3">
                         @php
-                            $failed=\App\Model\Order::where(['order_status'=>'failed'])->whereBetween('created_at', [$from, $to])->count()
+                            $failed=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'failed'])->whereBetween('created_at', [$from, $to])->count()
                         @endphp
                         <!-- Card -->
                         <div class="card card-sm">
@@ -251,7 +251,7 @@
 
                     <div class="col-sm-6 col-lg-3">
                         @php
-                            $canceled=\App\Model\Order::where(['order_status'=>'canceled'])->whereBetween('created_at', [$from, $to])->count()
+                            $canceled=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'canceled'])->whereBetween('created_at', [$from, $to])->count()
                         @endphp
                         <!-- Card -->
                         <div class="card card-sm">
@@ -308,7 +308,7 @@
                 @php
                     $x=1;
                     $y=12;
-                    $total=\App\Model\Order::whereBetween('created_at', [date('Y-'.$x.'-01'), date('Y-'.$y.'-30')])->count()
+                    $total=\App\Model\Order::where('branch_id', auth('branch')->id())->whereBetween('created_at', [date('Y-'.$x.'-01'), date('Y-'.$y.'-30')])->count()
                 @endphp
                 <h6 class="d-flex align-items-center gap-2 mb-0">{{translate('total')}} {{translate('orders')}} of {{date('Y')}}: <span
                         class="h4 mb-0">{{round($total)}}</span>
@@ -326,7 +326,7 @@
                     for ($i=1;$i<=12;$i++){
                         $from = date('Y-'.$i.'-01');
                         $to = date('Y-'.$i.'-30');
-                        $delivered[$i]=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->count();
+                        $delivered[$i]=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->count();
                     }
             @endphp
 
@@ -335,7 +335,7 @@
                     for ($i=1;$i<=12;$i++){
                         $from = date('Y-'.$i.'-01');
                         $to = date('Y-'.$i.'-30');
-                        $ret[$i]=\App\Model\Order::where(['order_status'=>'returned'])->whereBetween('created_at', [$from, $to])->count();
+                        $ret[$i]=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'returned'])->whereBetween('created_at', [$from, $to])->count();
                     }
             @endphp
 
@@ -344,7 +344,7 @@
                     for ($i=1;$i<=12;$i++){
                         $from = date('Y-'.$i.'-01');
                         $to = date('Y-'.$i.'-30');
-                        $fai[$i]=\App\Model\Order::where(['order_status'=>'failed'])->whereBetween('created_at', [$from, $to])->count();
+                        $fai[$i]=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'failed'])->whereBetween('created_at', [$from, $to])->count();
                     }
             @endphp
 
@@ -353,7 +353,7 @@
                     for ($i=1;$i<=12;$i++){
                         $from = date('Y-'.$i.'-01');
                         $to = date('Y-'.$i.'-30');
-                        $can[$i]=\App\Model\Order::where(['order_status'=>'canceled'])->whereBetween('created_at', [$from, $to])->count();
+                        $can[$i]=\App\Model\Order::where('branch_id', auth('branch')->id())->where(['order_status'=>'canceled'])->whereBetween('created_at', [$from, $to])->count();
                     }
             @endphp
 
@@ -499,7 +499,7 @@
                     <!-- Body -->
                     <div class="card-body card-body-height">
                         @php
-                            $orders= \App\Model\Order::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->get();
+                            $orders= \App\Model\Order::where('branch_id', auth('branch')->id())->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->get();
                         @endphp
                         <!-- Tab Content -->
                         <div class="tab-content" id="eventsTabContent">
@@ -538,7 +538,7 @@
                             </div>
 
                             @php
-                                $orders= \App\Model\Order::whereBetween('created_at', [now()->subDays(7)->startOfWeek(), now()->subDays(7)->endOfWeek()])->get();
+                                $orders= \App\Model\Order::where('branch_id', auth('branch')->id())->whereBetween('created_at', [now()->subDays(7)->startOfWeek(), now()->subDays(7)->endOfWeek()])->get();
                             @endphp
 
                             <div class="tab-pane fade" id="last-week" role="tabpanel" aria-labelledby="last-week-tab">

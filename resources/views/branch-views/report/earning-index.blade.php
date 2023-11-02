@@ -205,7 +205,7 @@
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between flex-wrap gap-2">
                 @php
-                    $total_sold=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [date('y-01-01'), date('y-12-31')])->sum('order_amount')
+                    $total_sold=\App\Model\Order::where(['order_status'=>'delivered','branch_id' => auth('branch')->id()])->whereBetween('created_at', [date('y-01-01'), date('y-12-31')])->sum('order_amount')
                 @endphp
                 <h6 class="d-flex align-items-center gap-2 mb-0">
                     {{translate('Total_Sale')}} ({{date('Y')}}) :
@@ -223,7 +223,7 @@
                     for ($i=1;$i<=12;$i++){
                         $from = date('Y-'.$i.'-01');
                         $to = date('Y-'.$i.'-30');
-                        $sold[$i]=Helpers::set_price(\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->sum('order_amount'));
+                        $sold[$i]=Helpers::set_price(\App\Model\Order::where(['order_status'=>'delivered','branch_id' => auth('branch')->id()])->whereBetween('created_at', [$from, $to])->sum('order_amount'));
                     }
             @endphp
 
@@ -232,7 +232,7 @@
                     for ($i=1;$i<=12;$i++){
                         $from = date('Y-'.$i.'-01');
                         $to = date('Y-'.$i.'-30');
-                        $tax[$i]=\App\Model\Order::where(['order_status'=>'delivered'])->whereBetween('created_at', [$from, $to])->sum('total_tax_amount');
+                        $tax[$i]=\App\Model\Order::where(['order_status'=>'delivered','branch_id' => auth('branch')->id()])->whereBetween('created_at', [$from, $to])->sum('total_tax_amount');
                     }
             @endphp
 
