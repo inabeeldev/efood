@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
-    
+
     /*authentication*/
     Route::group(['namespace' => 'Auth', 'prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::get('/code/captcha/{tmp}', 'LoginController@captcha')->name('default-captcha');
@@ -16,7 +16,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
     });
     /*authentication*/
 
-    
+
     Route::group(['prefix' => 'message', 'as' => 'message.','middleware' => ['branch', 'branch_status','membership']], function () {
         Route::get('list', 'ConversationController@list')->name('list');
         Route::post('update-fcm-token', 'ConversationController@update_fcm_token')->name('update_fcm_token');
@@ -25,7 +25,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('store/{user_id}', 'ConversationController@store')->name('store');
         Route::get('view/{user_id}', 'ConversationController@view')->name('view');
     });
-    
+
     Route::group(['prefix' => 'customer', 'as' => 'customer.','middleware' => ['membership']], function () {
         Route::post('add-point/{id}', 'CustomerController@add_point')->name('add-point');
         Route::get('set-point-modal-data/{id}', 'CustomerController@set_point_modal_data')->name('set-point-modal-data');
@@ -45,8 +45,8 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('message-notification', 'CustomerController@message_notification')->name('message_notification');
         Route::post('chat-image-upload', 'CustomerController@chat_image_upload')->name('chat_image_upload');
     });
-    
-    
+
+
     Route::group(['prefix' => 'delivery-man', 'as' => 'delivery-man.'], function () {
         Route::get('add', 'DeliveryManController@index')->name('add');
         Route::post('store', 'DeliveryManController@store')->name('store');
@@ -63,7 +63,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('list', 'DeliveryManController@reviews_list')->name('list');
         });
     });
-    
+
     Route::group(['prefix' => 'reservation', 'as' => 'reservation.'], function () {
         Route::get('list', 'ReservationController@list')->name('list');
         Route::get('status/{id}/{status}', 'ReservationController@status')->name('status');
@@ -71,8 +71,8 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::get('excel-import', 'ReservationController@excel_import')->name('excel_import');
     });
 
-    
-    
+
+
     Route::group(['prefix' => 'category', 'as' => 'category.'], function () {
         Route::get('add', 'CategoryController@index')->name('add');
         Route::get('add-sub-category', 'CategoryController@sub_index')->name('add-sub-category');
@@ -85,7 +85,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::delete('delete/{id}', 'CategoryController@delete')->name('delete');
         Route::post('search', 'CategoryController@search')->name('search');
     });
-    
+
     Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
         Route::get('add-new', 'ProductController@index')->name('add-new');
         Route::post('variant-combination', 'ProductController@variant_combination')->name('variant-combination');
@@ -114,7 +114,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('update/{id}', 'AttributeController@update')->name('update');
         Route::delete('delete/{id}', 'AttributeController@delete')->name('delete');
     });
-    
+
     Route::group(['prefix' => 'addon', 'as' => 'addon.'], function () {
         Route::get('add-new', 'AddonController@index')->name('add-new');
         Route::post('store', 'AddonController@store')->name('store');
@@ -122,13 +122,13 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('update/{id}', 'AddonController@update')->name('update');
         Route::delete('delete/{id}', 'AddonController@delete')->name('delete');
     });
-    
+
     Route::group(['prefix' => 'reviews', 'as' => 'reviews.'], function () {
         Route::get('list', 'ReviewsController@list')->name('list');
         Route::post('search', 'ReviewsController@search')->name('search');
     });
-    
-    
+
+
     Route::group(['prefix' => 'banner', 'as' => 'banner.'], function () {
         Route::get('add-new', 'BannerController@index')->name('add-new');
         Route::post('store', 'BannerController@store')->name('store');
@@ -138,7 +138,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::get('status/{id}/{status}', 'BannerController@status')->name('status');
         Route::delete('delete/{id}', 'BannerController@delete')->name('delete');
     });
-    
+
     Route::group(['prefix' => 'notification', 'as' => 'notification.','middleware' => ['membership']], function () {
         Route::get('add-new', 'NotificationController@index')->name('add-new');
         Route::post('store', 'NotificationController@store')->name('store');
@@ -147,7 +147,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::get('status/{id}/{status}', 'NotificationController@status')->name('status');
         Route::delete('delete/{id}', 'NotificationController@delete')->name('delete');
     });
-    
+
     Route::group(['prefix' => 'coupon', 'as' => 'coupon.','middleware' => ['membership']], function () {
         Route::get('add-new', 'CouponController@add_new')->name('add-new');
         Route::post('store', 'CouponController@store')->name('store');
@@ -158,7 +158,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::get('generate-coupon-code', 'CouponController@generate_coupon_code')->name('generate-coupon-code');
         Route::get('coupon-details', 'CouponController@coupon_details_modal')->name('coupon-details');
     });
-    
+
     Route::group(['prefix' => 'report', 'as' => 'report.','middleware' => ['membership']], function () {
         Route::get('order', 'ReportController@order_index')->name('order');
         Route::get('earning', 'ReportController@earning_index')->name('earning');
@@ -172,7 +172,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('sale-report-filter', 'ReportController@sale_filter')->name('sale-report-filter');
         Route::get('export-sale-report', 'ReportController@export_sale_report')->name('export-sale-report');
     });
-    
+
     Route::group(['prefix' => 'package', 'as' => 'package.'], function () {
         Route::get('add-new', 'PackageController@add_new')->name('add-new');
         Route::post('add-new', 'PackageController@store');
@@ -181,7 +181,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('update/{id}', 'PackageController@update');
         Route::delete('delete', 'PackageController@delete')->name('delete');
     });
-        
+
 
 
     Route::group(['middleware' => ['branch', 'branch_status']], function () {
@@ -191,7 +191,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::post('get-membership', 'DashboardController@getMembershipStripe')->name('get_member_ship');
         Route::get('membership-success', 'DashboardController@getMembershipResponse')->name('member_ship_success');
         Route::get('membership-fail', 'DashboardController@getMembershipFail')->name('member_ship_fail');
-        
+
         Route::post('settings', 'DashboardController@settings_update');
         Route::post('settings-password', 'DashboardController@settings_password_update')->name('settings-password');
         Route::post('settings-location', 'DashboardController@settings_location_update')->name('settings-location');
@@ -236,7 +236,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('ajax-change-delivery-time-date/{order_id}', 'OrderController@ajax_change_delivery_time_date')->name('ajax-change-delivery-time-date');
         });
 
-        Route::group(['prefix' => 'table/order', 'as' => 'table.order.', 'middleware' => ['app_activate:' . APPS['table_app']['software_id']]], function () {
+        Route::group(['prefix' => 'table/order', 'as' => 'table.order.'], function () {
             Route::get('list/{status}', 'TableOrderController@order_list')->name('list');
             Route::get('details/{id}', 'TableOrderController@order_details')->name('details');
             Route::get('running', 'TableOrderController@table_running_order')->name('running');
@@ -253,7 +253,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::post('search', 'OrderController@search')->name('search');
         });
 
-        Route::group(['prefix' => 'table', 'as' => 'table.','middleware'=>[ 'app_activate:' . APPS['table_app']['software_id']]], function () {
+        Route::group(['prefix' => 'table', 'as' => 'table.'], function () {
             Route::get('list', 'TableController@list')->name('list');
             Route::post('store', 'TableController@store')->name('store');
             Route::get('edit/{id}', 'TableController@edit')->name('edit');
@@ -263,7 +263,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('index', 'TableController@index')->name('index');
         });
 
-        Route::group(['prefix' => 'kitchen', 'as' => 'kitchen.','middleware'=>[ 'app_activate:' . APPS['kitchen_app']['software_id']]], function () {
+        Route::group(['prefix' => 'kitchen', 'as' => 'kitchen.'], function () {
             Route::get('list', 'KitchenController@list')->name('list');
             Route::get('add-new', 'KitchenController@add_new')->name('add-new');
             Route::post('add-new', 'KitchenController@store');
@@ -273,7 +273,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('status/{id}/{status}', 'KitchenController@status')->name('status');
         });
 
-        Route::group(['prefix' => 'promotion', 'as' => 'promotion.','middleware'=>[ 'app_activate:' . APPS['table_app']['software_id']]], function () {
+        Route::group(['prefix' => 'promotion', 'as' => 'promotion.'], function () {
             Route::get('create', 'BranchPromotionController@create')->name('create');
             Route::post('store', 'BranchPromotionController@store')->name('store');
             Route::get('edit/{id}', 'BranchPromotionController@edit')->name('edit');
@@ -283,7 +283,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('status/{id}/{status}', 'BranchPromotionController@status')->name('status');
         });
     });
-    
+
         Route::group(['prefix' => 'business-settings', 'as' => 'business-settings.','middleware' => ['branch','membership']], function () {
             //restaurant-settings
             Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.'], function () {
@@ -418,7 +418,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('maintenance-mode', 'BusinessSettingsController@maintenance_mode')->name('maintenance-mode');
 
         });
-        
+
         //system-setup
         Route::group(['prefix' => 'system-setup', 'as' => 'system-setup.','middleware' => ['branch','membership']], function () {
             //app settings
@@ -446,5 +446,5 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
                 Route::get('delete/{lang}', 'LanguageController@delete')->name('delete');
             });
         });
-        
+
 });

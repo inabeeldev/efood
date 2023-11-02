@@ -2258,6 +2258,7 @@
   'Branch Name' => 'Restaurant Name',
   'User Name' => 'User Name',
   'Number of Reservations' => 'Number of Reservations',
+  'Reservation Type' => 'Reservation Type',
   'Date' => 'Date',
   'Time' => 'Time',
   'Outdoor Slots' => 'Outdoor Slots',
@@ -2428,4 +2429,7 @@
   'Updated Successfully for IOS' => 'Updated Successfully for IOS',
   'sessions' => 'Sessions',
   'Assign_Earrand_Guy' => 'Assign Earrand Guy',
+  'errand_management' => 'Errand management',
+  'Staff' => 'Staff',
+  'Errand' => 'Errand',
 );

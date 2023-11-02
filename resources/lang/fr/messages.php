@@ -2258,6 +2258,7 @@
   'Branch Name' => 'Restaurant Name',
   'User Name' => 'User Name',
   'Number of Reservations' => 'Number of Reservations',
+  'Reservation Type' => 'Reservation Type',
   'Date' => 'Date',
   'Time' => 'Time',
   'Outdoor Slots' => 'Outdoor Slots',

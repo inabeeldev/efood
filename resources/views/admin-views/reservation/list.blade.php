@@ -68,6 +68,7 @@
                                     <th>{{translate('Restaurant Name')}}</th>
                                     <th>{{translate('User Name')}}</th>
                                     <th>{{translate('Number of Reservations')}}</th>
+                                    <th>{{translate('Reservation Type')}}</th>
                                     <th>{{translate('Date')}}</th>
                                     <th>{{translate('Time')}}</th>
                                     <th >{{translate('Status')}}</th>
@@ -84,6 +85,7 @@
                                         <div><label class="text-dark">{{$reservation['f_name']." ".$reservation['l_name']}}</label></div>
                                     </td>
                                     <td><span class="badge badge-soft-info py-1 px-2">{{$reservation['number_of_reservations']}}</span></td>
+                                    <td><span class="badge badge-soft-success py-1 px-2">{{$reservation['reservation_type']}}</span></td>
                                     <td><span class="badge badge-soft-info py-1 px-2">{{$reservation['date']}}</span></td>
                                     <td><span class="badge badge-soft-info py-1 px-2">{{$reservation['time']}}</span></td>
                                     <td>
