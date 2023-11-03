@@ -45,6 +45,7 @@ class OrderController extends Controller
             'delivery_time' => 'required',
             'delivery_date' => 'required',
             'distance' => 'required',
+            'delivery_fee' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +85,9 @@ class OrderController extends Controller
                 'delivery_time' => $del_time,
                 'delivery_address' => json_encode(CustomerAddress::find($request->delivery_address_id) ?? null),
 
-                'delivery_charge' => Helpers::get_delivery_charge($request['distance']),
+                // 'delivery_charge' => Helpers::get_delivery_charge($request['distance']),
+                'delivery_charge' => $request['delivery_fee'],
+
                 'preparation_time' => Helpers::get_business_settings('default_preparation_time') ?? 0,
 
 //                'table_id' => $request['table_id'],

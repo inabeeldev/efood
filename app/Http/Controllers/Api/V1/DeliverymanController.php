@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\CentralLogics\Helpers;
-use App\Http\Controllers\Controller;
-use App\Model\DeliveryHistory;
-use App\Model\DeliveryMan;
 use App\Model\Order;
+use App\Model\DeliveryMan;
 use Illuminate\Http\Request;
+use App\CentralLogics\Helpers;
+use App\Model\DeliveryHistory;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class DeliverymanController extends Controller
@@ -82,7 +83,30 @@ class DeliverymanController extends Controller
             'created_at' => now(),
             'updated_at' => now()
         ]);
-        return response()->json(['message' => translate('location recorded')], 200);
+        // return response()->json(['message' => translate('location recorded')], 200);
+
+        $distanceResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+            'origins' => $dm['latitude'] . ',' . $dm['longitude'],
+            'destinations' => $request['latitude'] . ',' . $request['longitude'],
+            'key' => 'YOUR_GOOGLE_MAPS_API_KEY',
+        ]);
+
+        $distanceData = $distanceResponse->json();
+
+        // Extract distance in miles from the API response
+        $distanceInMeters = $distanceData['rows'][0]['elements'][0]['distance']['value'];
+        $distanceInMiles = $distanceInMeters / 1609.34; // 1 mile = 1609.34 meters
+
+        // Calculate the delivery fee
+        $deliveryFee = $distanceInMiles * 0.6; // $0.6 per mile
+
+        // ... continue with your code to record the location ...
+
+        return response()->json([
+            'message' => translate('location recorded'),
+            'distance_in_miles' => $distanceInMiles,
+            'delivery_fee' => $deliveryFee,
+        ], 200);
     }
 
     public function get_order_history(Request $request)

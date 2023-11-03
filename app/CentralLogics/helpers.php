@@ -86,7 +86,7 @@ class Helpers
                 $item['product_type'] = $item['product_type'] ?? '';
                 $item['rating'] = $item['rating'] ?? [];
 
-                
+
                 foreach (json_decode($item['variations'], true) as $var) {
                     array_push($variations, [
                         'type' => $var['type'],
@@ -211,7 +211,7 @@ class Helpers
         }
         return $config;
     }
-    
+
     public static function get_branch_business_settings($name)
     {
         $config = null;
@@ -310,7 +310,7 @@ class Helpers
     public static function send_push_notif_to_topic($data, $topic, $type)
     {
         $key = BusinessSetting::where(['key' => 'push_notification_key'])->first()->value;
-        
+
         $url = "https://fcm.googleapis.com/fcm/send";
         $header = array("authorization: key=" . $key . "",
             "content-type: application/json"
@@ -731,10 +731,10 @@ class Helpers
     {
         if (Storage::disk('public')->exists($dir . $old_image)) {
             Storage::disk('public')->delete($dir . $old_image);
-                    
-            
+
+
         }
-        
+
         $imageName = Helpers::upload($dir, $format, $image);
         return $imageName;
     }

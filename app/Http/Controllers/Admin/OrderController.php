@@ -145,6 +145,9 @@ class OrderController extends Controller
         $remaining_time = $ordered_time->add($order['preparation_time'], 'minute')->format('Y-m-d H:i:s');
         $order['remaining_time'] = $remaining_time;
 
+
+        $nearestDeliveryMan = $this->findNearestAvailableDeliveryMan($order->branch->latitude, $order->branch->longitude);
+
         return view('admin-views.order.order-view', compact('order'));
     }
 
