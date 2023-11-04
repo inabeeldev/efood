@@ -32,9 +32,10 @@ class ProductController extends Controller
 
     private function getCustomerLocation($location)
     {
+        $api_key = Helpers::get_business_settings('map_api_key');
         $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
             'address' => $location,
-            'key' => 'AIzaSyAa92MP_Iv7GVx4gN7iN7z42cXwAsKFzwY',
+            'key' => $api_key,
         ]);
         $location = $response->json()['results'][0]['geometry']['location'];
         $latitude = $location['lat'];
@@ -111,21 +112,21 @@ class ProductController extends Controller
 
     private function calculateDeliveryFeeBasedOnDistance($distance)
     {
-        // $config = Helpers::get_business_settings('delivery_management');
-        // $delivery_charge = 0;
-        // $min_shipping_charge = $config['min_shipping_charge'];
-        // $shipping_per_km = $config['shipping_per_km'];
-        // $deliveryFee = $shipping_per_km * $distance;
-        // if ($delivery_charge > $min_shipping_charge) {
-        //     return Helpers::set_price($delivery_charge);
-        // } else {
-        //     return Helpers::set_price($min_shipping_charge);
-        // }
-        $deliveryFeePerMile = 0.6;
+        $config = Helpers::get_business_settings('delivery_management');
+        $delivery_charge = 0;
+        $min_shipping_charge = $config['min_shipping_charge'];
+        $shipping_per_km = $config['shipping_per_km'];
+        $delivery_charge = $shipping_per_km * $distance;
+        if ($delivery_charge > $min_shipping_charge) {
+            return Helpers::set_price($delivery_charge);
+        } else {
+            return Helpers::set_price($min_shipping_charge);
+        }
+        // $deliveryFeePerMile = 0.6;
 
-        $deliveryFee = $distance * $deliveryFeePerMile;
+        // $deliveryFee = $distance * $deliveryFeePerMile;
 
-        return $deliveryFee;
+        // return $deliveryFee;
     }
 
 

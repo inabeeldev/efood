@@ -2396,6 +2396,7 @@
   'add_New_Earrand Guy' => 'Add New Earrand Guy',
   'Add new Earrand Guy' => 'Add new Earrand Guy',
   'Earrand Guy can not assign/change in that status' => 'Earrand Guy can not assign/change in that status',
+  'This Errand guy is not available. Assign this order to some other errand guy' => 'This Errand guy is not available. Assign this order to some other errand guy',
   'Eaton' => 'Eaton',
   'send_alert' => 'Send alert',
   5454 => '5454',

@@ -416,7 +416,7 @@
                                     </select>
                                 </div>
                             @endif
-@if($order->customer)
+                        @if($order->customer)
                             <div class="">
 {{--                                need change option--}}
                                 <label class="font-weight-bold text-dark fz-14">{{translate('Delivery_Date_&_Time')}} {{$order['delivery_date'] > \Carbon\Carbon::now()->format('Y-m-d')? translate('(Scheduled)') : ''}}</label>
@@ -432,7 +432,7 @@
                                     {{translate('Assign_Earrand_Guy')}}
                                 </a>
                             @endif
-@endif
+                        @endif
                             {{-- counter --}}
                             <div class="">
                                 @if($order['order_type'] != 'pos' && $order['order_type'] != 'take_away' && ($order['order_status'] != DELIVERED && $order['order_status'] != RETURNED && $order['order_status'] != CANCELED && $order['order_status'] != FAILED && $order['order_status'] != COMPLETED))
@@ -664,7 +664,7 @@
                 </div>
                 <div class="modal-body">
                     <ul class="list-group">
-                        @foreach(\App\Model\DeliveryMan::where('is_active', 1)->get() as $deliveryMan)
+                        {{-- @foreach(\App\Model\DeliveryMan::where('is_active', 1)->get() as $deliveryMan)
                             <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between">
                                 <div class="media align-items-center gap-2 flex-wrap">
                                     <div class="avatar">
@@ -676,7 +676,23 @@
                                 </div>
                                 <a id="{{$deliveryMan->id}}" onclick="addDeliveryMan(this.id)" class="btn btn-primary btn-sm">{{translate('Assign')}}</a>
                             </li>
+                        @endforeach --}}
+
+                        @foreach($nearestDeliveryMan as $deliveryMan)
+                            <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between">
+                                <div class="media align-items-center gap-2 flex-wrap">
+                                    <div class="avatar">
+                                        <img class="img-fit rounded-circle" loading="lazy" decoding="async"
+                                            onerror="this.src='{{asset('public/assets/admin/img/160x160/img1.jpg')}}'"
+                                            src="{{asset('/storage/app/public/delivery-man/'.$deliveryMan->image)}}" alt="Jhon Doe">
+                                    </div>
+                                    <span>{{$deliveryMan->f_name.' '.$deliveryMan->l_name}}</span>
+                                </div>
+                                <span><b>{{number_format($deliveryMan->distance, 2)}} km's Away</b></span> <!-- Display the distance with 2 decimal places -->
+                                <a id="{{$deliveryMan->id}}" onclick="addDeliveryMan(this.id)" class="btn btn-primary btn-sm">{{translate('Assign')}}</a>
+                            </li>
                         @endforeach
+
 
                     </ul>
                 </div>
@@ -849,7 +865,8 @@
                             location.reload();
                         }, 2000)
                     }else{
-                        toastr.error('{{\App\CentralLogics\translate("Earrand Guy can not assign/change in that status")}}', {
+                        // toastr.error('{{\App\CentralLogics\translate("Earrand Guy can not assign/change in that status")}}', {
+                        toastr.error('{{\App\CentralLogics\translate("This Errand guy is not available. Assign this order to some other errand guy")}}', {
                             CloseButton: true,
                             ProgressBar: true
                         });
