@@ -250,6 +250,15 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::get('export-excel', 'TableOrderController@export_excel')->name('export-excel');
         });
 
+        Route::group(['prefix' => 'give-away', 'as' => 'give-away.'], function () {
+            Route::get('list', 'GiveAwayController@list')->name('list');
+            Route::get('add-new', 'GiveAwayController@addNew')->name('add-new');
+            Route::post('add-new/store', 'GiveAwayController@store')->name('add-new.store');
+            Route::get('status/{id}/{status}', 'GiveAwayController@status')->name('status');
+            Route::delete('delete/{id}', 'GiveAwayController@delete')->name('delete');
+
+        });
+
         Route::group(['prefix' => 'order', 'as' => 'order.','middleware' => ['membership']], function () {
             Route::get('list/{status}', 'OrderController@list')->name('list');
             Route::put('status-update/{id}', 'OrderController@status')->name('status-update');

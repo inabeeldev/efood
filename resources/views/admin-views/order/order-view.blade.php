@@ -452,9 +452,9 @@
                                 <div class="card mb-3">
                                     <div class="card-body">
                                         <h4 class="mb-4 d-flex gap-2">
-                                    <span class="card-header-icon">
-                                        <i class="tio-user text-dark"></i>
-                                    </span>
+                                            <span class="card-header-icon">
+                                                <i class="tio-user text-dark"></i>
+                                            </span>
                                             <span>{{ translate('Earrand_Guy_man') }}</span>
                                             <a  href="#"  data-toggle="modal" data-target="#assignDeliveryMan"
                                                 class="text--base cursor-pointer ml-auto">
@@ -469,13 +469,13 @@
                                                 <a target="" href="#" class="text-dark"><span>{{$order->delivery_man['f_name'].' '.$order->delivery_man['l_name'] ?? ''}}</span></a>
                                                 <span class="text-dark"> <span>{{$order->delivery_man['orders_count']}}</span> {{translate('Orders')}}</span>
                                                 <span class="text-dark break-all">
-                                            <i class="tio-call-talking-quiet mr-2"></i>
-                                            <a href="tel:{{$order->delivery_man['phone']}}" class="text-dark">{{$order->delivery_man['phone'] ?? ''}}</a>
-                                        </span>
-                                                <span class="text-dark break-all">
-                                            <i class="tio-email mr-2"></i>
-                                            <a href="mailto:{{$order->delivery_man['email']}}" class="text-dark">{{$order->delivery_man['email'] ?? ''}}</a>
-                                        </span>
+                                                <i class="tio-call-talking-quiet mr-2"></i>
+                                                <a href="tel:{{$order->delivery_man['phone']}}" class="text-dark">{{$order->delivery_man['phone'] ?? ''}}</a>
+                                                </span>
+                                                        <span class="text-dark break-all">
+                                                    <i class="tio-email mr-2"></i>
+                                                    <a href="mailto:{{$order->delivery_man['email']}}" class="text-dark">{{$order->delivery_man['email'] ?? ''}}</a>
+                                                </span>
                                             </div>
                                         </div>
                                         <hr class="w-100">

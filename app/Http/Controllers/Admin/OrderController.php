@@ -6,7 +6,7 @@ use App\User;
 use DateTime;
 use Carbon\Carbon;
 use App\Model\Order;
-use App\DeliveryRequest;
+use App\Model\DeliveryRequest;
 use App\Model\TableOrder;
 use App\Model\Notification;
 use Illuminate\Http\Request;

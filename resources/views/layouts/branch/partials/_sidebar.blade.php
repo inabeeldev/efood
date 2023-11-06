@@ -367,6 +367,45 @@
                                 </ul>
                             </li>
                             <!-- End Pages -->
+                            <li class="nav-item">
+                                <small
+                                    class="nav-subtitle">{{translate('Give Away')}} {{translate('management')}}</small>
+                                <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                            </li>
+                            <!-- Pages -->
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('branch/orders/list*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
+                                title="{{translate('Give Away')}}">
+                                    <i class="tio-shopping-cart nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{translate('Free')}} {{translate('Give Away')}}
+                                    </span>
+                                </a>
+                                    <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                    style="display: {{Request::is('branch/give-away/add-new')?'block':'none'}}">
+                                    <li class="nav-item {{Request::is('branch/give-away/add-new')?'active':''}}">
+                                        <a class="nav-link" href="{{route('branch.give-away.add-new')}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('add_new_giveaway')}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('branch/give-away/list')?'active':''}}">
+                                        <a class="nav-link " href="{{route('branch.give-away.list')}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('List Give Aways')}}
+                                                {{-- <span class="badge badge-soft-info badge-pill ml-1">
+                                                    {{\App\Model\Order::notPos()->notSchedule()->where(['order_status'=>'pending','branch_id'=>auth('branch')->id()])->count()}}
+                                                </span> --}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+
 
                             <li class="nav-item">
                                 <small

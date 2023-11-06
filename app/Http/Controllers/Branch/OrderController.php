@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Branch;
 
-use App\CentralLogics\Helpers;
-use App\Http\Controllers\Controller;
-use App\Model\Order;
-use Brian2694\Toastr\Facades\Toastr;
-use Carbon\Carbon;
 use DateTime;
+use Carbon\Carbon;
+use App\Model\Order;
 use Illuminate\Http\Request;
+use App\CentralLogics\Helpers;
+use App\Model\DeliveryRequest;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Brian2694\Toastr\Facades\Toastr;
 use Rap2hpoutre\FastExcel\FastExcel;
 use function App\CentralLogics\translate;
 
@@ -17,7 +18,7 @@ class OrderController extends Controller
 {
     public function list($status, Request $request)
     {
-        
+
         $from = $request['from'];
         $to = $request['to'];
 
@@ -110,7 +111,9 @@ class OrderController extends Controller
 
     public function details($id)
     {
-        $order = Order::with('details')->where(['id' => $id, 'branch_id' => auth('branch')->id()])->first();
+        $order = Order::with(['details', 'customer', 'delivery_address', 'branch', 'delivery_man'])
+            ->where(['id' => $id, 'branch_id' => auth('branch')->id()])
+            ->first();
 
         if(!isset($order)) {
             Toastr::info(translate('No more orders!'));
@@ -122,9 +125,73 @@ class OrderController extends Controller
         $ordered_time = Carbon::createFromFormat('Y-m-d H:i:s', date("Y-m-d H:i:s", strtotime($delivery_date_time)));
         $remaining_time = $ordered_time->add($order['preparation_time'], 'minute')->format('Y-m-d H:i:s');
         $order['remaining_time'] = $remaining_time;
+        // dd($order);
+        $nearestDeliveryMan = $this->findNearestAvailableDeliveryMen([$order->branch->latitude, $order->branch->longitude]);
+        // dd($nearestDeliveryMan);
 
-        return view('branch-views.order.order-view', compact('order'));
+        return view('branch-views.order.order-view', compact('order','nearestDeliveryMan'));
     }
+
+    protected function findNearestAvailableDeliveryMen($branchLocation, $numOfDeliveryMen = 15)
+    {
+        // Query the database to find the available delivery guys with FCM tokens.
+        $availableDeliveryGuys = DB::table('delivery_men')
+            ->select('*')
+            ->where('is_available', true)
+            ->get();
+
+        $nearestDeliveryGuys = [];
+        $distances = [];
+
+        // Calculate distances and find the nearest delivery guys.
+        foreach ($availableDeliveryGuys as $deliveryGuy) {
+            $deliveryGuyLocation = [$deliveryGuy->latitude, $deliveryGuy->longitude];
+            $distance = $this->calculateDistance($branchLocation, $deliveryGuyLocation);
+
+            // Add the distance as a key-value pair to the $deliveryGuy object.
+            $deliveryGuy->distance = $distance;
+
+            // Add the delivery guy to the list.
+            $nearestDeliveryGuys[] = $deliveryGuy;
+
+            // Keep the list sorted by distance.
+            usort($nearestDeliveryGuys, function ($a, $b) {
+                return $a->distance <=> $b->distance;
+            });
+
+            // If the list exceeds the specified number of delivery men, remove the last one.
+            if (count($nearestDeliveryGuys) > $numOfDeliveryMen) {
+                array_pop($nearestDeliveryGuys);
+            }
+        }
+
+        return $nearestDeliveryGuys;
+    }
+
+
+    protected function calculateDistance($location1, $location2)
+    {
+        // Calculate the distance between two locations using the Haversine formula.
+        $lat1 = deg2rad($location1[0]);
+        $lon1 = deg2rad($location1[1]);
+        $lat2 = deg2rad($location2[0]);
+        $lon2 = deg2rad($location2[1]);
+
+        $dlat = $lat2 - $lat1;
+        $dlon = $lon2 - $lon1;
+
+        $a = sin($dlat / 2)**2 + cos($lat1) * cos($lat2) * sin($dlon / 2)**2;
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        // Radius of the Earth in kilometers
+        $earthRadius = 6371;
+
+        // Calculate the distance
+        $distance = $earthRadius * $c;
+
+        return $distance;
+    }
+
 
     public function status(Request $request)
     {
@@ -256,33 +323,74 @@ class OrderController extends Controller
         if($order->order_status == 'delivered' || $order->order_status == 'returned' || $order->order_status == 'failed' || $order->order_status == 'canceled' || $order->order_status == 'scheduled') {
             return response()->json(['status' => false], 200);
         }
-        $order->delivery_man_id = $delivery_man_id;
-        $order->save();
+        // Create a delivery request with 'pending' status
+        $deliveryRequest = new DeliveryRequest([
+            'order_id' => $order_id,
+            'deliveryman_id' => $delivery_man_id,
+            'status' => 'pending',
+        ]);
+        $deliveryRequest->save();
 
-        $fcm_token = $order->delivery_man->fcm_token;
-        $customer_fcm_token = null;
-        if(isset($order->customer)) {
-            $customer_fcm_token = $order->customer->cm_firebase_token;
-        }
-        $value = Helpers::order_status_update_message('del_assign');
-        try {
-            if ($value) {
-                $data = [
-                    'title' => translate('Order'),
-                    'description' => $value,
-                    'order_id' => $order['id'],
-                    'image' => '',
-                    'type'=>'order_status',
-                ];
-                Helpers::send_push_notif_to_device($fcm_token, $data);
+        $maxWaitTime = 15; // Maximum wait time in seconds
+        $startTime = time(); // Record the start time
+
+        while (true) {
+            // Check if the maximum wait time has been reached
+            if (time() - $startTime >= $maxWaitTime) {
+                // Handle the case where the delivery man didn't respond within the allowed time
+                return response()->json(['status' => false], 200);
             }
-        } catch (\Exception $e) {
-            Toastr::warning(translate('Push notification failed for DeliveryMan!'));
-        }
 
-        Toastr::success(translate('Order deliveryman added!'));
-        return response()->json(['status' => true], 200);
+            // Check the status of the delivery request
+            $deliveryRequest = DeliveryRequest::where('order_id', $order_id)
+                ->where('deliveryman_id', $delivery_man_id)
+                ->first();
+
+            if ($deliveryRequest && $deliveryRequest->status === 'accepted') {
+                // The delivery man accepted the request, proceed with assignment
+                $order->delivery_man_id = $delivery_man_id;
+                $order->save();
+
+                // Send notifications and other processing here
+                $fcm_token = $order->delivery_man->fcm_token;
+            $customer_fcm_token = null;
+                if(isset($order->customer)) {
+                    $customer_fcm_token = $order->customer->cm_firebase_token;
+                }
+                $value = Helpers::order_status_update_message('del_assign');
+                try {
+                    if ($value) {
+                        $data = [
+                            'title' => translate('Order'),
+                            'description' => $value,
+                            'order_id' => $order_id,
+                            'image' => '',
+                            'type'=>'order_status',
+                        ];
+                        Helpers::send_push_notif_to_device($fcm_token, $data);
+                        if(isset($order->customer)) {
+                            $data['description'] = Helpers::order_status_update_message('customer_notify_message');
+                        }
+                        if(isset($customer_fcm_token)) {
+                            Helpers::send_push_notif_to_device($customer_fcm_token, $data);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Toastr::warning(translate('Push notification failed for DeliveryMan!'));
+                }
+
+                return response()->json(['status' => true], 200);
+            } elseif ($deliveryRequest && $deliveryRequest->status === 'rejected') {
+                // The delivery man rejected the request
+                // Handle the case where the delivery man rejects the request
+                return response()->json(['status' => false], 200);
+            }
+
+            // Sleep for a short interval before checking again
+            sleep(2); // Adjust the sleep time as needed
+        }
     }
+
 
     public function payment_status(Request $request)
     {

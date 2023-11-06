@@ -251,6 +251,58 @@ $('.getMembership').on('click',function(e){
     });
 </script>
 
+<script>
+    function status_change(t) {
+        let url = $(t).data('url');
+        let checked = $(t).prop("checked");
+        let status = checked === true ? 1 : 0;
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Want to change status',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#FC6A57',
+            cancelButtonColor: 'default',
+            cancelButtonText: '{{translate("No")}}',
+            confirmButtonText: '{{translate("Yes")}}',
+            reverseButtons: true
+        }).then((result) => {
+                if (result.value) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: url,
+                        data: {
+                            status: status
+                        },
+                        success: function (data, status) {
+                            toastr.success("{{translate('Status changed successfully')}}");
+                        },
+                        error: function (data) {
+                            toastr.error("{{translate('Status changed failed')}}");
+                        }
+                    });
+                }
+                else if (result.dismiss) {
+                    if (status == 1) {
+                        $('#' + t.id).prop('checked', false)
+
+                    } else if (status == 0) {
+                        $('#'+ t.id).prop('checked', true)
+                    }
+                    toastr.info("{{translate("Status hasn't changed")}}");
+                }
+            }
+        )
+    }
+
+</script>
+
+
 <!-- IE Support -->
 <script>
     if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) document.write('<script src="{{asset('public/assets/admin')}}/vendor/babel-polyfill/polyfill.min.js"><\/script>');

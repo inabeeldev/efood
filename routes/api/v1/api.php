@@ -157,6 +157,12 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
             Route::post('add', 'WishlistController@add_to_wishlist');
             Route::delete('remove', 'WishlistController@remove_from_wishlist');
         });
+        Route::group(['prefix' => 'vote'], function () {
+            Route::post('add-product-vote', 'VoteController@addProductVote');
+            Route::post('add-restaurant-vote', 'VoteController@addRestaurantVote');
+            Route::get('product-votes', 'VoteController@productVote');
+            Route::get('restaurant-votes', 'VoteController@restaurantVote');
+        });
     });
 
     Route::group(['prefix' => 'banners'], function () {

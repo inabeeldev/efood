@@ -1,11 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DeliveryRequest extends Model
+class ProductVote extends Model
 {
-    //
     protected $guarded = [];
 }

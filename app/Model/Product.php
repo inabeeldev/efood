@@ -2,10 +2,11 @@
 
 namespace App\Model;
 
+use App\Model\GiveAway;
 use App\CentralLogics\Helpers;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
@@ -78,5 +79,10 @@ class Product extends Model
                 return $query->where('locale', app()->getLocale());
             }]);
         });
+    }
+
+    public function giveAways()
+    {
+        return $this->hasMany(GiveAway::class, 'product_id');
     }
 }

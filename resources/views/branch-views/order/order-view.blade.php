@@ -446,20 +446,20 @@
                                             </a>
                                         </h4>
                                         <div class="media flex-wrap gap-3">
-                                            <a class="">
+                                            <a target="_blank" class="" href="{{route('admin.customer.view',[$order->customer['id']])}}">
                                                 <img class="avatar avatar-lg rounded-circle" src="{{asset('storage/app/public/delivery-man/'.$order->delivery_man->image)}}" onerror="this.src='{{asset('public/assets/admin/img/160x160/img1.jpg')}}'" alt="Image">
                                             </a>
                                             <div class="media-body d-flex flex-column gap-1">
                                                 <a target="" href="#" class="text-dark"><span>{{$order->delivery_man['f_name'].' '.$order->delivery_man['l_name'] ?? ''}}</span></a>
                                                 <span class="text-dark"> <span>{{$order->delivery_man['orders_count']}}</span> {{translate('Orders')}}</span>
                                                 <span class="text-dark break-all">
-                                            <i class="tio-call-talking-quiet mr-2"></i>
-                                            <a href="tel:{{$order->delivery_man['phone']}}" class="text-dark">{{$order->delivery_man['phone'] ?? ''}}</a>
-                                        </span>
-                                                <span class="text-dark break-all">
-                                            <i class="tio-email mr-2"></i>
-                                            <a href="mailto:{{$order->delivery_man['email']}}" class="text-dark">{{$order->delivery_man['email'] ?? ''}}</a>
-                                        </span>
+                                                <i class="tio-call-talking-quiet mr-2"></i>
+                                                <a href="tel:{{$order->delivery_man['phone']}}" class="text-dark">{{$order->delivery_man['phone'] ?? ''}}</a>
+                                                </span>
+                                                        <span class="text-dark break-all">
+                                                    <i class="tio-email mr-2"></i>
+                                                    <a href="mailto:{{$order->delivery_man['email']}}" class="text-dark">{{$order->delivery_man['email'] ?? ''}}</a>
+                                                </span>
                                             </div>
                                         </div>
                                         <hr class="w-100">
@@ -648,7 +648,7 @@
                 </div>
                 <div class="modal-body">
                     <ul class="list-group">
-                        @foreach(\App\Model\DeliveryMan::where(['is_active'=> 1, 'branch_id' => auth('branch')->id()])->get() as $deliveryMan)
+                        {{-- @foreach(\App\Model\DeliveryMan::where(['is_active'=> 1, 'branch_id' => auth('branch')->id()])->get() as $deliveryMan)
                             <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between">
                                 <div class="media align-items-center gap-2 flex-wrap">
                                     <div class="avatar">
@@ -660,6 +660,20 @@
                                 </div>
                                 <a id="{{$deliveryMan->id}}" onclick="addDeliveryMan(this.id)" class="btn btn-primary btn-sm">{{translate('Assign')}}</a>
                             </li>
+                        @endforeach --}}
+                        @foreach($nearestDeliveryMan as $deliveryMan)
+                        <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between">
+                            <div class="media align-items-center gap-2 flex-wrap">
+                                <div class="avatar">
+                                    <img class="img-fit rounded-circle" loading="lazy" decoding="async"
+                                        onerror="this.src='{{asset('public/assets/admin/img/160x160/img1.jpg')}}'"
+                                        src="{{asset('/storage/app/public/delivery-man/'.$deliveryMan->image)}}" alt="Jhon Doe">
+                                </div>
+                                <span>{{$deliveryMan->f_name.' '.$deliveryMan->l_name}}</span>
+                            </div>
+                            <span><b>{{number_format($deliveryMan->distance, 2)}} km's Away</b></span> <!-- Display the distance with 2 decimal places -->
+                            <a id="{{$deliveryMan->id}}" onclick="addDeliveryMan(this.id)" class="btn btn-primary btn-sm">{{translate('Assign')}}</a>
+                        </li>
                         @endforeach
 
                     </ul>
