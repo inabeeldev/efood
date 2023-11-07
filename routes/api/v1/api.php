@@ -100,6 +100,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
         Route::get('reviews/{product_id}', 'ProductController@get_product_reviews');
         Route::get('rating/{product_id}', 'ProductController@get_product_rating');
         Route::post('reviews/submit', 'ProductController@submit_product_review')->middleware('auth:api');
+        Route::get('featured_products', 'ProductController@featuredProduct')->middleware('auth:api');
     });
 
     Route::group(['prefix' => 'banners'], function () {

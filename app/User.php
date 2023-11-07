@@ -25,7 +25,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name','f_name', 'l_name', 'phone', 'email', 'password','point', 'is_active', 'user_type'
     ];
-    
+
     protected $appends = ['Package'];
 
 
@@ -90,13 +90,18 @@ class User extends Authenticatable
             return $query->where('user_type', $user_type);
         }
     }
-    
+
     public function getPackageAttribute()
     {
         if ($this->plan_id && $this->plan_id != "") {
             return Plan::where('id',$this->plan_id)->where('status',1)->first();
         }
         return null;
+    }
+
+    public function votedBranches()
+    {
+        return $this->belongsToMany(Branch::class, 'branch_votes', 'user_id', 'branch_id');
     }
 
 

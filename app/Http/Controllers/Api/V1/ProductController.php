@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\User;
 use App\Model\Branch;
 use App\Model\Review;
 use App\Model\Product;
@@ -127,6 +128,29 @@ class ProductController extends Controller
         // $deliveryFee = $distance * $deliveryFeePerMile;
 
         // return $deliveryFee;
+    }
+
+
+    public function featuredProduct(Request $request)
+    {
+        $products = ProductLogic::get_voted_products($request['limit'], $request['offset'], $request['product_type'], $request->user()->id);
+        $products['products'] = Helpers::product_data_formatting($products['products'], true);
+        return response()->json($products, 200);
+
+
+
+        $user_id = $request->user()->id;
+        $user = User::find($user_id); // Replace $user_id with the actual user's ID
+        $votedBranches = $user->votedBranches;
+
+        $votedBranchProducts = [];
+
+        foreach ($votedBranches as $branch) {
+            $products = $branch->products; // Assuming 'products' is the relationship name in the Restaurant model
+            $votedBranchProducts[$branch->name] = $products;
+        }
+
+        dd($votedBranchProducts);
     }
 
 

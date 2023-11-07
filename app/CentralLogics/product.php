@@ -3,8 +3,9 @@
 namespace App\CentralLogics;
 
 
-use App\Model\Product;
+use App\User;
 use App\Model\Review;
+use App\Model\Product;
 use App\Model\Wishlist;
 
 class ProductLogic
@@ -64,10 +65,10 @@ class ProductLogic
                 //     "colors" => $value->colors  ?? '',
                 //     "popularity_count" => $value->popularity_count  ?? '',
                 //     "product_type" => $value->product_type  ?? '',
-                //     "rating" => $value->rating     
+                //     "rating" => $value->rating
                 // ];
             }
-        
+
         return [
             'total_size' => $paginator->total(),
             'limit' => $limit,
@@ -112,6 +113,37 @@ class ProductLogic
             'products' => $paginator->items()
         ];
     }
+
+    public static function get_voted_products($limit, $offset, $product_type, $user_id)
+    {
+        $limit = is_null($limit) ? 10 : $limit;
+        $offset = is_null($offset) ? 1 : $offset;
+
+        $user = User::find($user_id); // Replace $user_id with the actual user's ID
+        $votedBranches = $user->votedBranches;
+        $votedBranchProducts = [];
+
+        foreach ($votedBranches as $branch) {
+            $products = $branch->products; // Assuming 'products' is the relationship name in the Restaurant model
+            $votedBranchProducts[$branch->name] = $products;
+        }
+
+        $paginator = Product::active()
+            ->when(isset($product_type) && ($product_type == 'veg' || $product_type == 'non_veg'), function ($query) use ($product_type) {
+                return $query->productType(($product_type == 'veg') ? 'veg' : 'non_veg');
+            })
+            ->with(['rating'])
+            ->orderBy('popularity_count', 'desc')
+            ->paginate($limit, ['*'], 'page', $offset);
+        /*$paginator->count();*/
+        return [
+            'total_size' => $paginator->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'products' => $paginator->items()
+        ];
+    }
+
 
     public static function get_related_products($product_id)
     {
