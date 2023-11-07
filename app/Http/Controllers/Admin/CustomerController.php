@@ -6,6 +6,7 @@ use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Conversation;
 use App\Model\Newsletter;
+use App\Model\Notification;
 use App\Model\Order;
 use App\Model\PointTransitions;
 use App\User;
@@ -259,6 +260,52 @@ class CustomerController extends Controller
         $users = User::select('f_name as First Name',
             'l_name as Last Name', 'email as Email', 'is_active as Active', 'phone as Phone', 'point as Point')->get();
         return (new FastExcel($users))->download('customers.xlsx');
+    }
+
+    public function topCustomer(Request $request)
+    {
+        // $query_param = [];
+        // $search = $request->input('search');
+
+        // $customer = User::where('user_type', null);
+
+        // if (!empty($search)) {
+        //     $key = explode(' ', $search);
+        //     $customer->where(function ($q) use ($key) {
+        //         foreach ($key as $value) {
+        //             $q->orWhere('f_name', 'like', "%{$value}%")
+        //                 ->orWhere('l_name', 'like', "%{$value}%")
+        //                 ->orWhere('email', 'like', "%{$value}%")
+        //                 ->orWhere('phone', 'like', "%{$value}%");
+        //         }
+        //     });
+        //     $query_param = ['search' => $search];
+        // }
+
+        // Get the top 5 users with the most orders
+        $notifications = Notification::all();
+        $customers = User::withCount('orders')->orderBy('orders_count', 'desc')->take(5)->get();
+        // dd($customers);
+        return view('admin-views.customer.top-customer', compact('customers','notifications'));
+    }
+
+    public function assignNotification($cid, $nid)
+    {
+        dd($cid);
+        // Find the user (customer) by their ID
+        $user = User::find($cid);
+
+        if ($user) {
+            // Update the user's notification_id with the $nid value
+            $user->notification_id = $nid;
+            $user->save();
+
+            // Optionally, you can redirect or return a response with a success message
+            return redirect()->back()->with('success', 'Notification assigned successfully.');
+        } else {
+            // Handle the case where the user (customer) with the provided ID was not found
+            return redirect()->back()->with('error', 'User not found.');
+        }
     }
 
 

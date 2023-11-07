@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Branch;
 use DateTime;
 use Carbon\Carbon;
 use App\Model\Order;
+use App\Model\Branch;
+use App\Model\DeliveryMan;
 use Illuminate\Http\Request;
 use App\CentralLogics\Helpers;
 use App\Model\DeliveryRequest;
@@ -205,7 +207,30 @@ class OrderController extends Controller
             $order->payment_status = 'paid';
         }
         $order->save();
+        if($request->order_status == 'delivered' && $order->payment_status == 'paid') {
+            $branch = Branch::find($order->branch_id);
+            $nature_fee = Helpers::get_business_settings('nature_fee');
+            if ($branch) {
+                $amountToSubtract = ($order->order_amount/100) * $nature_fee;
+                $remainingAmount = $order->order_amount - $amountToSubtract;
+                $currentWalletAmount = $branch->wallet_amount;
+                $newWalletAmount = $currentWalletAmount + $remainingAmount;
 
+                $branch->update([
+                    'wallet_amount' => $newWalletAmount
+                ]);
+            }
+            $delivery_man = DeliveryMan::find($order->delivery_man_id);
+            if ($delivery_man) {
+                $currentWalletAmount = $delivery_man->wallet_amount;
+                $newWalletAmount = $currentWalletAmount + $order->delivery_charge;
+
+                $delivery_man->update([
+                    'wallet_amount' => $newWalletAmount
+                ]);
+            }
+
+        }
         $fcm_token=null;
         if($order->customer) {
             $fcm_token = $order->customer->cm_firebase_token;

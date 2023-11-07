@@ -91,6 +91,15 @@
                                     </div>
                                 </div>
 
+                                @php($nature_fee=\App\CentralLogics\Helpers::get_business_settings('nature_fee'))
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="input-label text-capitalize">{{translate('Nature Menu Fee')}}%</label>
+                                        <input type="text" value="{{$nature_fee}}"
+                                               name="nature_fee" class="form-control">
+                                    </div>
+                                </div>
+
                                 <div class="col-md-4 col-sm-6">
                                     <div class="form-group">
                                         <label class="input-label" for="country">{{translate('country')}}</label>

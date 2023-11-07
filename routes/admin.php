@@ -421,6 +421,9 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('update-status/{id}', 'CustomerController@update_status')->name('update_status');
             Route::delete('delete', 'CustomerController@destroy')->name('destroy');
             Route::get('excel-import', 'CustomerController@excel_import')->name('excel_import');
+            Route::get('top-customers', 'CustomerController@topCustomer')->name('top-customers');
+            Route::get('assign-notification/{cid}/{nid}', 'CustomerController@assignNotification')->name('assign-notification');
+
 
             Route::get('chat', 'CustomerController@chat')->name('chat');
             Route::post('get-user-info', 'CustomerController@get_user_info')->name('get_user_info');

@@ -115,6 +115,9 @@ class BusinessSettingsController extends Controller
         DB::table('business_settings')->updateOrInsert(['key' => 'currency'], [
             'value' => $request['currency'],
         ]);
+        DB::table('business_settings')->updateOrInsert(['key' => 'nature_fee'], [
+            'value' => $request['nature_fee'],
+        ]);
 
         $curr_logo = BusinessSetting::where(['key' => 'logo'])->first();
         DB::table('business_settings')->updateOrInsert(['key' => 'logo'], [

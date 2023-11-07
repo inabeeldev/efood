@@ -577,6 +577,12 @@
                                             <span class="text-truncate">{{translate('point_history')}}</span>
                                         </a>
                                     </li>
+                                    <li class="nav-item {{Request::is('admin/customer/top-customers')? 'active':''}}">
+                                        <a class="nav-link" href="{{route('admin.customer.top-customers')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('Top Customers')}}</span>
+                                        </a>
+                                    </li>
 
                                 </ul>
                             </li>

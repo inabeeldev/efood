@@ -16,7 +16,7 @@ class Branch extends Authenticatable
     ];
     protected $appends = ['image_url'];
 
-
+    protected $guarded = [];
 
     public function branch_promotion(){
         return $this->hasMany(BranchPromotion::class);
@@ -35,7 +35,7 @@ class Branch extends Authenticatable
     {
         return $this->hasMany(Reservation::class);
     }
-    
+
     public function getImageUrlAttribute(){
         $imageUrl = "http://efood.startifier.co/storage/app/public/branch/".$this->image;
         // if(file_exists(public_path($imageUrl))){

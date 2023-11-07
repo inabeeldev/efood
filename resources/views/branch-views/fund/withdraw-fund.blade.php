@@ -29,8 +29,9 @@
 
         <div class="row g-2">
             <div class="col-12">
-                <form action="{{route('admin.delivery-man.store')}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('branch.funds.request-withdraw')}}" method="post" >
                     @csrf
+                    <input type="hidden" name="branch_id" value="{{ auth('branch')->id() }}">
                     <div class="card">
                         <div class="card-header">
                             <h5 class="mb-0 d-flex align-items-center gap-2 mb-0">
@@ -55,7 +56,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="input-label">{{translate('Account Number')}}</label>
-                                        <input value="{{old('account_number')}}" type="text" name="account_number" class="form-control" placeholder="{{translate('Account Number')}}" required>
+                                        <input value="{{old('account_number')}}" type="text" name="account_no" class="form-control" placeholder="{{translate('Account Number')}}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -67,7 +68,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="input-label">{{translate('Amount to Withdraw')}}</label>
-                                        <input value="{{old('withdraw_amount')}}" type="text" name="withdraw_amount" class="form-control" placeholder="{{translate('Amount to Withdraw')}}" required>
+                                        <input value="{{old('withdraw_amount')}}" type="number" name="amount" class="form-control" placeholder="{{translate('Amount to Withdraw')}}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">

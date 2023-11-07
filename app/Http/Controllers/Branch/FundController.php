@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Branch;
 
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
+use App\Model\Branch;
+use App\Model\BranchWithdrawRequest;
 use App\Model\Order;
 use App\Model\OrderDetail;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -65,5 +67,17 @@ class FundController extends Controller
     public function withdrawFund()
     {
         return view('branch-views.fund.withdraw-fund');
+    }
+
+    public function requestWithdraw(Request $request)
+    {
+        $input = $request->all();
+        // dd($input);
+        BranchWithdrawRequest::create($input);
+        $branch = Branch::find($request->branch_id);
+        $branch->update([
+            'wallet_amount' => $branch->wallet_amount - $request->amount
+        ]);
+        return redirect()->back();
     }
 }

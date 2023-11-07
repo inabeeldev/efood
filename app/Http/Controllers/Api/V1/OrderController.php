@@ -87,6 +87,7 @@ class OrderController extends Controller
 
                 // 'delivery_charge' => Helpers::get_delivery_charge($request['distance']),
                 'delivery_charge' => $request['delivery_fee'],
+                'total_amount' => Helpers::set_price($request['order_amount']) + $request['delivery_fee'],
 
                 'preparation_time' => Helpers::get_business_settings('default_preparation_time') ?? 0,
 

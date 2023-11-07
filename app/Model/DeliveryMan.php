@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class DeliveryMan extends Authenticatable
 {
     use Notifiable;
+    protected $guarded = [];
 
     public function reviews()
     {

@@ -240,6 +240,7 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
             Route::post('sale-report-filter', 'ReportController@sale_filter')->name('sale-report-filter');
             Route::get('export-sale-report', 'ReportController@export_sale_report')->name('export-sale-report');
             Route::get('withdraw-funds', 'FundController@withdrawFund')->name('withdraw');
+            Route::post('request-withdraw', 'FundController@requestWithdraw')->name('request-withdraw');
         });
 
         Route::group(['prefix' => 'table/order', 'as' => 'table.order.'], function () {

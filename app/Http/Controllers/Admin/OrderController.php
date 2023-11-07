@@ -14,6 +14,8 @@ use App\CentralLogics\Helpers;
 use App\Model\CustomerAddress;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Model\Branch;
+use App\Model\DeliveryMan;
 use Brian2694\Toastr\Facades\Toastr;
 use Rap2hpoutre\FastExcel\FastExcel;
 use function App\CentralLogics\translate;
