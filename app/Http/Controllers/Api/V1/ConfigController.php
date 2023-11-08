@@ -105,6 +105,7 @@ class ConfigController extends Controller
             'terms_and_conditions' => BusinessSetting::where(['key' => 'terms_and_conditions'])->first()->value ?? '',
             'privacy_policy' => BusinessSetting::where(['key' => 'privacy_policy'])->first()->value ?? '',
             'about_us' => BusinessSetting::where(['key' => 'about_us'])->first()->value ?? '',
+            'platform_fee_customers' => Helpers::get_business_settings('platform_fee_customers'),
             /*'terms_and_conditions' => route('terms-and-conditions'),
             'privacy_policy' => route('privacy-policy'),
             'about_us' => route('about-us')*/

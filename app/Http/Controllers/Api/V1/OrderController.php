@@ -46,6 +46,7 @@ class OrderController extends Controller
             'delivery_date' => 'required',
             'distance' => 'required',
             'delivery_fee' => 'required',
+            'customer_platform_fee' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -87,7 +88,9 @@ class OrderController extends Controller
 
                 // 'delivery_charge' => Helpers::get_delivery_charge($request['distance']),
                 'delivery_charge' => $request['delivery_fee'],
-                'total_amount' => Helpers::set_price($request['order_amount']) + $request['delivery_fee'],
+                'customer_platform_fee' => $request['customer_platform_fee'],
+                // 'total_amount' => Helpers::set_price($request['order_amount']) + $request['delivery_fee'] + $request['customer_platform_fee'],
+                'total_amount' => Helpers::set_price($request['total_amount']),
 
                 'preparation_time' => Helpers::get_business_settings('default_preparation_time') ?? 0,
 

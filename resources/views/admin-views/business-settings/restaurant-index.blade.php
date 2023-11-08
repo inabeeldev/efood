@@ -91,12 +91,32 @@
                                     </div>
                                 </div>
 
-                                @php($nature_fee=\App\CentralLogics\Helpers::get_business_settings('nature_fee'))
+
+
+                                @php($platform_fee_restaurants=\App\CentralLogics\Helpers::get_business_settings('platform_fee_restaurants'))
                                 <div class="col-md-4 col-sm-6">
                                     <div class="form-group">
-                                        <label class="input-label text-capitalize">{{translate('Nature Menu Fee')}}%</label>
-                                        <input type="text" value="{{$nature_fee}}"
-                                               name="nature_fee" class="form-control">
+                                        <label class="input-label text-capitalize">{{translate('Platform Fee For Restautants')}} (%)</label>
+                                        <input type="text" value="{{$platform_fee_restaurants}}"
+                                               name="platform_fee_restaurants" class="form-control">
+                                    </div>
+                                </div>
+
+                                @php($platform_fee_delivery_men=\App\CentralLogics\Helpers::get_business_settings('platform_fee_delivery_men'))
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="input-label text-capitalize">{{translate('Platform Fee For Errand Guy')}} (%)</label>
+                                        <input type="text" value="{{$platform_fee_delivery_men}}"
+                                               name="platform_fee_delivery_men" class="form-control">
+                                    </div>
+                                </div>
+
+                                @php($platform_fee_customers=\App\CentralLogics\Helpers::get_business_settings('platform_fee_customers'))
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="input-label text-capitalize">{{translate('Platform Fee For Customers')}} (%)</label>
+                                        <input type="text" value="{{$platform_fee_customers}}"
+                                               name="platform_fee_customers" class="form-control">
                                     </div>
                                 </div>
 

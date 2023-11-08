@@ -1637,7 +1637,11 @@
   'Time_Zone' => 'Time Zone',
   'Ex: 9.43896534' => 'Ex: 9.43896534',
   'Currency_Position' => 'Currency Position',
+  'Platform Fee For Restautants' => 'Platform Fee For Restautants',
+  'Platform Fee For Errand Guy' => 'Platform Fee For Errand Guy',
+  'Platform Fee For Customers' => 'Platform Fee For Customers',
   'Nature Menu Fee' => 'Nature Menu Fee',
+  'Add Customer Incentives' => 'Add Customer Incentives',
   'digit_After_Decimal_Point ' => 'Digit After Decimal Point ',
   'Company_Coptyright_Text' => 'Company Coptyright Text',
   'min_Order_value' => 'Min Order value',
@@ -2462,4 +2466,6 @@
   'delivery_requests' => 'Delivery requests',
   'give_aways' => 'Give aways',
   'product_votes' => 'Product votes',
+  'Platform Fee For Restautants' => 'Platform Fee For Restautants',
+  'Platform Fee For Customers' => 'Platform Fee For Customers',
 );

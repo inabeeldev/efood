@@ -422,7 +422,8 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::delete('delete', 'CustomerController@destroy')->name('destroy');
             Route::get('excel-import', 'CustomerController@excel_import')->name('excel_import');
             Route::get('top-customers', 'CustomerController@topCustomer')->name('top-customers');
-            Route::get('assign-notification/{cid}/{nid}', 'CustomerController@assignNotification')->name('assign-notification');
+            Route::get('customer-incentives/add', 'CustomerController@addIncentive')->name('customer-incentives.add');
+            // Route::get('customer-incentive/{cid}/{nid}', 'CustomerController@assignNotification')->name('assign-notification');
 
 
             Route::get('chat', 'CustomerController@chat')->name('chat');
