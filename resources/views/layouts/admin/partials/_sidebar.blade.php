@@ -583,10 +583,10 @@
                                             <span class="text-truncate">{{translate('Top Customers')}}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/customer/customer-incentives/add')? 'active':''}}">
-                                        <a class="nav-link" href="{{route('admin.customer.customer-incentives.add')}}">
+                                    <li class="nav-item {{Request::is('admin/customer/customer-incentives')? 'active':''}}">
+                                        <a class="nav-link" href="{{route('admin.customer.customer-incentives')}}">
                                             <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{translate('Add Customer Incentives')}}</span>
+                                            <span class="text-truncate">{{translate('Customer Incentives')}}</span>
                                         </a>
                                     </li>
 

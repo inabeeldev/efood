@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\CentralLogics\Helpers;
-use App\Http\Controllers\Controller;
-use App\Model\Conversation;
-use App\Model\Newsletter;
-use App\Model\Notification;
-use App\Model\Order;
-use App\Model\PointTransitions;
 use App\User;
-use Brian2694\Toastr\Facades\Toastr;
+use App\Model\Order;
+use App\Model\Newsletter;
+use App\Model\Conversation;
+use App\Model\Notification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\CentralLogics\Helpers;
+use App\Model\PointTransitions;
+use App\Model\CustomerIncentive;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Brian2694\Toastr\Facades\Toastr;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
@@ -271,11 +273,65 @@ class CustomerController extends Controller
         return view('admin-views.customer.top-customer', compact('customers','notifications'));
     }
 
-    public function addIncentive()
+    public function customerIncentive()
     {
         $customers = User::withCount('orders')->orderBy('orders_count', 'desc')->take(5)->get();
-        $notifications = Notification::all();
+        $notifications = Notification::where('for_customer', 1)->get();
+
+        $customerIncentives = CustomerIncentive::with('user', 'notification')->latest()->paginate(Helpers::getPagination());
+
+        //  dd($customerIncentives);
+        return view('admin-views.customer.incentive' , compact('customers','notifications','customerIncentives'));
     }
+
+    public function storeIncentive(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|unique:customer_incentives,user_id',
+            'notification_id' => 'required',
+            'status' => 'required'
+        ], [
+            'user_id.required' => translate('Please select User!'),
+            'notification_id.required' => translate('Please select Notification'),
+            'user_id.unique' => translate('This user already have incentive'),
+            'status.required' => translate('Status is required!')
+        ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $incentive = new CustomerIncentive;
+
+        $incentive->user_id = $request->user_id;
+        $incentive->notification_id = $request->notification_id;
+        $incentive->status = $request->status;
+        $incentive->save();
+        Toastr::success(translate('Incentive for Customer Added!'));
+        return redirect()->route('admin.customer.customer-incentives');
+
+    }
+
+    public function incentiveUpdate(Request $request)
+    {
+        $incentive = CustomerIncentive::find($request->id);
+        $incentive->status = $request->status;
+        $incentive->save();
+        Toastr::success(translate('Customer Incentive status updated!'));
+        return back();
+    }
+
+
+    public function incentiveDelete(Request $request)
+    {
+        $incentive = CustomerIncentive::find($request->id);
+        $incentive->delete();
+        Toastr::success(translate('Customer Incentive removed!'));
+        return back();
+    }
+
 
 
 

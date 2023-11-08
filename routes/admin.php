@@ -422,7 +422,10 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::delete('delete', 'CustomerController@destroy')->name('destroy');
             Route::get('excel-import', 'CustomerController@excel_import')->name('excel_import');
             Route::get('top-customers', 'CustomerController@topCustomer')->name('top-customers');
-            Route::get('customer-incentives/add', 'CustomerController@addIncentive')->name('customer-incentives.add');
+            Route::get('customer-incentives', 'CustomerController@customerIncentive')->name('customer-incentives');
+            Route::post('customer-incentives/store', 'CustomerController@storeIncentive')->name('customer-incentives.store');
+            Route::get('customer-incentives/update/{id}', 'CustomerController@incentiveUpdate')->name('customer-incentives.update');
+            Route::delete('customer-incentives/delete/{id}', 'CustomerController@incentiveDelete')->name('customer-incentives.delete');
             // Route::get('customer-incentive/{cid}/{nid}', 'CustomerController@assignNotification')->name('assign-notification');
 
 

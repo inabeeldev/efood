@@ -17,7 +17,7 @@ class CreateCustomerIncentivesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('notification_id');
-            $table->mediumText('comment');
+            $table->mediumText('comment')->nullable();
             $table->timestamps();
         });
     }

@@ -47,6 +47,7 @@ class OrderController extends Controller
             'distance' => 'required',
             'delivery_fee' => 'required',
             'customer_platform_fee' => 'required',
+            'total_amount' => 'required',
         ]);
 
         if ($validator->fails()) {

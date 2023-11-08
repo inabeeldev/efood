@@ -35,7 +35,15 @@
                                         <label class="input-label">{{translate('description')}}<span class="text-info"> ({{translate('not_more_than')}} 256 {{translate('characters')}})</span></label>
                                         <textarea name="description" maxlength="256" class="form-control" placeholder="{{translate('Description...')}}" required></textarea>
                                     </div>
+                                    <div class="form-group">
+                                        <div class="form-check custom-checkbox">
+                                            <input type="hidden" name="for_customer" value="0"> <!-- Default value if the checkbox is not checked -->
+                                            <input type="checkbox" name="for_customer" value="1" class="form-check-input custom-control-input" id="for_customer_checkbox">
+                                            <label class="form-check-label custom-control-label" for="for_customer_checkbox"><b>{{ translate('Is this Notification for Customers?') }}</b></label>
+                                        </div>
+                                    </div>
                                 </div>
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <div class="d-flex align-items-center justify-content-center gap-1">
@@ -53,6 +61,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="d-flex justify-content-end gap-3">
                                 <button type="reset" id="reset" class="btn btn-secondary">{{translate('reset')}}</button>
                                 <button type="submit" class="btn btn-primary">{{translate('send_notification')}}</button>

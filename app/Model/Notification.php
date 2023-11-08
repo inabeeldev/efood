@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\CustomerIncentive;
 use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
@@ -17,4 +18,10 @@ class Notification extends Model
     {
         return $query->where('status', '=', 1);
     }
+
+    public function customerIncentives()
+    {
+        return $this->hasMany(CustomerIncentive::class, 'notification_id');
+    }
+
 }

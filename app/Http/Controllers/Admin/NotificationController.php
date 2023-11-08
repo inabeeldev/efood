@@ -37,6 +37,7 @@ class NotificationController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'title' => 'required|max:100',
             'description' => 'required|max:255'
@@ -47,6 +48,7 @@ class NotificationController extends Controller
 
         $notification = new Notification;
         $notification->title = $request->title;
+        $notification->for_customer = $request->for_customer;
         $notification->description = $request->description;
         $notification->image = Helpers::upload('notification/', 'png', $request->file('image'));
         $notification->status = 1;

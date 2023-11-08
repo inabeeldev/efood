@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserIdToNotifications extends Migration
+class AddStatusToCustomerIncentives extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddUserIdToNotifications extends Migration
      */
     public function up()
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->after('updated_at')->nullable();
+        Schema::table('customer_incentives', function (Blueprint $table) {
+            $table->boolean('status')->default(1);
         });
     }
 
@@ -25,8 +25,8 @@ class AddUserIdToNotifications extends Migration
      */
     public function down()
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            // $table->dropColumn('user_id');
+        Schema::table('customer_incentives', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 }

@@ -2,15 +2,17 @@
 
 namespace App;
 
+use App\Model\Plan;
+use App\Model\Order;
 use App\Model\Branch;
 use App\Model\ChefBranch;
+use App\Model\Notification;
 use App\Model\CustomerAddress;
-use App\Model\Order;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Model\CustomerIncentive;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
-use App\Model\Plan;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
 class User extends Authenticatable
@@ -61,6 +63,11 @@ class User extends Authenticatable
 
     public function chefBranch(){
         return $this->hasOne(ChefBranch::class,'user_id', 'id');
+    }
+
+    public function customerIncentives()
+    {
+        return $this->hasMany(CustomerIncentive::class, 'user_id');
     }
 
     public static function get_chef_branch_name($chef)
