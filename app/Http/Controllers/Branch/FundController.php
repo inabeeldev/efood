@@ -78,6 +78,7 @@ class FundController extends Controller
         $branch->update([
             'wallet_amount' => $branch->wallet_amount - $request->amount
         ]);
+        Toastr::info(translate('We have received your request. You will soon get your amount!'));
         return redirect()->back();
     }
 }

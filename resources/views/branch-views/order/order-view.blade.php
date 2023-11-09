@@ -337,7 +337,7 @@
                                     </dt>
                                     <dd class="col-6 text-dark text-right">
                                         - {{ \App\CentralLogics\Helpers::set_symbol($order['extra_discount']) }}</dd>
-                                    <dt class="col-6">
+                                    {{-- <dt class="col-6">
                                         <div class="d-flex max-w220 ml-auto">{{translate('delivery')}} {{translate('fee')}}:</div>
                                     </dt>
                                     <dd class="col-6 text-dark text-right">
@@ -347,13 +347,13 @@
                                             @php($del_c=$order['delivery_charge'])
                                         @endif
                                         {{ \App\CentralLogics\Helpers::set_symbol($del_c) }}
-                                    </dd>
+                                    </dd> --}}
 
                                     <dt class="col-6 border-top pt-2 fz-16 font-weight-bold">
                                         <div class="d-flex max-w220 ml-auto">{{translate('total')}}:</div>
                                     </dt>
                                     {{--<dd class="col-6 border-top pt-2 fz-16 font-weight-bold text-dark">{{ \App\CentralLogics\Helpers::set_symbol($sub_total+$del_c+$total_tax+$add_ons_cost-$order['coupon_discount_amount']-$order['extra_discount']) }}</dd> --}}
-                                    <dd class="col-6 border-top pt-2 fz-16 font-weight-bold text-dark text-right">{{ \App\CentralLogics\Helpers::set_symbol($sub_total - $order['coupon_discount_amount'] - $order['extra_discount'] + $del_c) }}</dd>
+                                    <dd class="col-6 border-top pt-2 fz-16 font-weight-bold text-dark text-right">{{ \App\CentralLogics\Helpers::set_symbol($sub_total - $order['coupon_discount_amount'] - $order['extra_discount']) }}</dd>
                                 </dl>
                             </div>
                         </div>

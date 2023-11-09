@@ -2481,4 +2481,5 @@
   'OTP is not found!' => 'OTP is not found!',
   'Customer not found!' => 'Customer not found!',
   'Invalid token.' => 'Invalid token.',
+  'We have received your request. You will soon get your amount!' => 'We have received your request. You will soon get your amount!',
 );
