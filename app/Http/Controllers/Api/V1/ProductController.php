@@ -24,106 +24,11 @@ class ProductController extends Controller
 
 
         // Calculate delivery fee for each product
-        $customerLocation = $this->getCustomerLocation($request['location']); // Get customer's location
-        $products['products'] = $this->calculateDeliveryFee($products['products'], $customerLocation);
+        $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+        $products['products'] = ProductLogic::calculateDeliveryFee($products['products'], $customerLocation);
 
 
         return response()->json($products, 200);
-    }
-
-    private function getCustomerLocation($location)
-    {
-        $api_key = Helpers::get_business_settings('map_api_key');
-        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
-            'address' => $location,
-            'key' => $api_key,
-        ]);
-        $location = $response->json()['results'][0]['geometry']['location'];
-        $latitude = $location['lat'];
-        $longitude = $location['lng'];
-        // Use geocoding service to get customer's location coordinates
-        // You can follow the steps from my previous response for this part
-        $customerLocation = [
-            'latitude' => $latitude, // Replace with actual latitude
-            'longitude' => $longitude // Replace with actual longitude
-        ];
-
-        return $customerLocation;
-    }
-
-    private function calculateDeliveryFee($products, $customerLocation)
-    {
-        foreach ($products as &$product) {
-            // Calculate distance between the branch and customer
-            $branchLocation = $this->getBranchLocation($product['branch_id']); // Get branch's location
-            $distance = $this->calculateDistance($branchLocation, $customerLocation);
-
-            // Calculate delivery fee based on distance (you may have your own logic)
-            $deliveryFee = $this->calculateDeliveryFeeBasedOnDistance($distance);
-
-            // Add delivery fee to the product data
-            $product['delivery_fee'] = $deliveryFee;
-        }
-
-        return $products;
-    }
-
-    private function getBranchLocation($branchId)
-    {
-        // Retrieve the branch's location coordinates based on branch_id
-        // Implement your logic to fetch the branch's location here
-        // Return the location as an array with 'latitude' and 'longitude'
-        $branch = Branch::where('id', $branchId)->first();
-
-        if ($branch) {
-            return [
-                'latitude' => $branch->latitude, // Replace with the actual column names for latitude and longitude
-                'longitude' => $branch->longitude, // Replace with the actual column names for latitude and longitude
-            ];
-        } else {
-            // Handle the case where the branch is not found, e.g., return a default location
-            return [
-                'latitude' => 0.0, // Default latitude
-                'longitude' => 0.0, // Default longitude
-            ];
-        }
-    }
-
-    private function calculateDistance($location1, $location2)
-    {
-        // Implement the Haversine formula to calculate distance between two coordinates
-        // Return the distance in kilometers or miles, depending on your preference
-        $lat1 = deg2rad($location1['latitude']);
-        $lon1 = deg2rad($location1['longitude']);
-        $lat2 = deg2rad($location2['latitude']);
-        $lon2 = deg2rad($location2['longitude']);
-
-        $earthRadius = 6371; // Earth's radius in kilometers
-
-        $dlat = $lat2 - $lat1;
-        $dlon = $lon2 - $lon1;
-
-        $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin($dlon / 2) * sin($dlon / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-        $distance = $earthRadius * $c;
-
-        return $distance;
-    }
-
-    private function calculateDeliveryFeeBasedOnDistance($distance)
-    {
-        $config = Helpers::get_business_settings('delivery_management');
-        $delivery_charge = 0;
-        $min_shipping_charge = $config['min_shipping_charge'];
-        $shipping_per_km = $config['shipping_per_km'];
-        $delivery_charge = $shipping_per_km * $distance;
-        if ($delivery_charge > $min_shipping_charge) {
-            return Helpers::set_price($delivery_charge);
-        } else {
-            return Helpers::set_price($min_shipping_charge);
-        }
-
     }
 
 
@@ -134,12 +39,13 @@ class ProductController extends Controller
         $votedBranches = $user->votedBranches;
 
         $votedBranchProducts = [];
-        $customerLocation = $this->getCustomerLocation($request['location']);
+        $customerLocation = ProductLogic::getCustomerLocation($request['location']);
 
         foreach ($votedBranches as $branch) {
             $products = $branch->products; // Assuming 'products' is the relationship name in the Restaurant model
+            $products = Helpers::product_data_formatting($products, true);
 
-            $productsWithDeliveryFee = $this->calculateDeliveryFee($products, $customerLocation);
+            $productsWithDeliveryFee = ProductLogic::calculateDeliveryFee($products, $customerLocation);
 
             $votedBranchProducts[$branch->name] = $productsWithDeliveryFee;
         }
@@ -148,17 +54,14 @@ class ProductController extends Controller
 
 
 
-
-
-
-
-
-
-
     public function get_popular_products(Request $request)
     {
         $products = ProductLogic::get_popular_products($request['limit'], $request['offset'], $request['product_type']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
+
+        $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+        $products['products'] = ProductLogic::calculateDeliveryFee($products['products'], $customerLocation);
+
         return response()->json($products, 200);
     }
 
@@ -199,14 +102,19 @@ class ProductController extends Controller
             ];
         }
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
+
+        $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+        $products['products'] = ProductLogic::calculateDeliveryFee($products['products'], $customerLocation);
         return response()->json($products, 200);
     }
 
-    public function get_product($id)
+    public function get_product(Request $request, $id)
     {
         try {
             $product = ProductLogic::get_product($id);
             $product = Helpers::product_data_formatting($product, false);
+            $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+            $product = ProductLogic::calculateDeliveryFee($product, $customerLocation);
             return response()->json($product, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -215,11 +123,13 @@ class ProductController extends Controller
         }
     }
 
-    public function get_related_products($id)
+    public function get_related_products(Request $request, $id)
     {
         if (Product::find($id)) {
             $products = ProductLogic::get_related_products($id);
             $products = Helpers::product_data_formatting($products, true);
+            $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+            $products = ProductLogic::calculateDeliveryFee($products, $customerLocation);
             return response()->json($products, 200);
         }
         return response()->json([
@@ -227,10 +137,12 @@ class ProductController extends Controller
         ], 404);
     }
 
-    public function get_set_menus()
+    public function get_set_menus(Request $request)
     {
         try {
             $products = Helpers::product_data_formatting(Product::active()->with(['rating'])->where(['set_menu' => 1, 'status' => 1])->latest()->get(), true);
+            $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+            $products = ProductLogic::calculateDeliveryFee($products, $customerLocation);
             return response()->json($products, 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -200,19 +200,22 @@ class ReportController extends Controller
         $total_sold = 0;
         $total_qty = 0;
 
-        foreach (OrderDetail::whereIn('order_id', $orders)->latest()->get() as $detail) {
+        foreach (OrderDetail::with('product')->whereIn('order_id', $orders)->latest()->get() as $detail) {
             $price = $detail['price'] - $detail['discount_on_product'];
             $ord_total = $price * $detail['quantity'];
+            $pn = $detail->product['name'];
             array_push($data, [
                 'order_id' => $detail['order_id'],
                 'date' => $detail['created_at'],
                 'price' => $ord_total,
                 'quantity' => $detail['quantity'],
+                'product' => $pn,
             ]);
             $total_sold += $ord_total;
             $total_qty += $detail['quantity'];
         }
 
+        // dd($data);
         return response()->json([
             'order_count' => count($data),
             'item_qty' => $total_qty,

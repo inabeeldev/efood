@@ -2482,4 +2482,7 @@
   'Customer not found!' => 'Customer not found!',
   'Invalid token.' => 'Invalid token.',
   'We have received your request. You will soon get your amount!' => 'We have received your request. You will soon get your amount!',
+  'Order is already marked as delivered!' => 'Order is already marked as delivered!',
+  'Your have already been paid. You cannot change payment status' => 'Your have already been paid. You cannot change payment status',
+  'Distance information not available.' => 'Distance information not available.',
 );

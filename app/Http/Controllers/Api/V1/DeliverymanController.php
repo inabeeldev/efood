@@ -84,11 +84,11 @@ class DeliverymanController extends Controller
             'updated_at' => now()
         ]);
         // return response()->json(['message' => translate('location recorded')], 200);
-
+        $api_key = Helpers::get_business_settings('map_api_key');
         $distanceResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
             'origins' => $dm['latitude'] . ',' . $dm['longitude'],
             'destinations' => $request['latitude'] . ',' . $request['longitude'],
-            'key' => 'YOUR_GOOGLE_MAPS_API_KEY',
+            'key' => $api_key,
         ]);
 
         $distanceData = $distanceResponse->json();
@@ -105,7 +105,7 @@ class DeliverymanController extends Controller
         return response()->json([
             'message' => translate('location recorded'),
             'distance_in_miles' => $distanceInMiles,
-            'delivery_fee' => $deliveryFee,
+            // 'delivery_fee' => $deliveryFee,
         ], 200);
     }
 

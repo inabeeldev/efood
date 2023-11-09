@@ -2,11 +2,12 @@
 
 namespace App\CentralLogics;
 
-
+use App\Model\Branch;
 use App\User;
 use App\Model\Review;
 use App\Model\Product;
 use App\Model\Wishlist;
+use Illuminate\Support\Facades\Http;
 
 class ProductLogic
 {
@@ -226,5 +227,120 @@ class ProductLogic
 
         return [$overallRating, $totalRating];
     }
+
+
+
+
+
+
+    public static function getCustomerLocation($location)
+    {
+        $api_key = Helpers::get_business_settings('map_api_key');
+        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
+            'address' => $location,
+            'key' => $api_key,
+        ]);
+        $location = $response->json()['results'][0]['geometry']['location'];
+        $latitude = $location['lat'];
+        $longitude = $location['lng'];
+        // Use geocoding service to get customer's location coordinates
+        // You can follow the steps from my previous response for this part
+        $customerLocation = [
+            'latitude' => $latitude, // Replace with actual latitude
+            'longitude' => $longitude // Replace with actual longitude
+        ];
+
+        return $customerLocation;
+    }
+
+    public static function calculateDeliveryFee($products, $customerLocation)
+    {
+        if (is_array($products)) {
+            foreach ($products as &$product) {
+                $product = self::calculateDeliveryFeeForProduct($product, $customerLocation);
+            }
+        } else {
+            // Handle a single product
+            $products = self::calculateDeliveryFeeForProduct($products, $customerLocation);
+        }
+
+        return $products;
+    }
+
+    private static function calculateDeliveryFeeForProduct($product, $customerLocation)
+    {
+        // Calculate distance between the branch and customer
+        $branchLocation = self::getBranchLocation($product['branch_id']); // Get branch's location
+        $distance = self::calculateDistance($branchLocation, $customerLocation);
+
+        // Calculate delivery fee based on distance (you may have your own logic)
+        $deliveryFee = self::calculateDeliveryFeeBasedOnDistance($distance);
+
+        // Add delivery fee to the product data
+        $product['delivery_fee'] = $deliveryFee;
+
+        return $product;
+    }
+
+
+    public static function getBranchLocation($branchId)
+    {
+        // Retrieve the branch's location coordinates based on branch_id
+        // Implement your logic to fetch the branch's location here
+        // Return the location as an array with 'latitude' and 'longitude'
+        $branch = Branch::where('id', $branchId)->first();
+
+        if ($branch) {
+            return [
+                'latitude' => $branch->latitude, // Replace with the actual column names for latitude and longitude
+                'longitude' => $branch->longitude, // Replace with the actual column names for latitude and longitude
+            ];
+        } else {
+            // Handle the case where the branch is not found, e.g., return a default location
+            return [
+                'latitude' => 0.0, // Default latitude
+                'longitude' => 0.0, // Default longitude
+            ];
+        }
+    }
+
+    public static function calculateDistance($location1, $location2)
+    {
+        // Implement the Haversine formula to calculate distance between two coordinates
+        // Return the distance in kilometers or miles, depending on your preference
+        $lat1 = deg2rad($location1['latitude']);
+        $lon1 = deg2rad($location1['longitude']);
+        $lat2 = deg2rad($location2['latitude']);
+        $lon2 = deg2rad($location2['longitude']);
+
+        $earthRadius = 6371; // Earth's radius in kilometers
+
+        $dlat = $lat2 - $lat1;
+        $dlon = $lon2 - $lon1;
+
+        $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin($dlon / 2) * sin($dlon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        $distance = $earthRadius * $c;
+
+        return $distance;
+    }
+
+    public static function calculateDeliveryFeeBasedOnDistance($distance)
+    {
+        $config = Helpers::get_business_settings('delivery_management');
+        $delivery_charge = 0;
+        $min_shipping_charge = $config['min_shipping_charge'];
+        $shipping_per_km = $config['shipping_per_km'];
+        $delivery_charge = $shipping_per_km * $distance;
+        if ($delivery_charge > $min_shipping_charge) {
+            return Helpers::set_price($delivery_charge);
+        } else {
+            return Helpers::set_price($min_shipping_charge);
+        }
+
+    }
+
+
 
 }

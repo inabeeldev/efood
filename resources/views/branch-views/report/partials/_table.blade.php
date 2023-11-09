@@ -5,6 +5,7 @@
         <tr>
             <th>{{translate('SL')}} </th>
             <th>{{translate('order')}}</th>
+            <th>{{translate('product')}}</th>
             <th>{{translate('date')}}</th>
             <th>{{translate('qty')}}</th>
             <th>{{translate('amount')}}</th>
@@ -19,6 +20,7 @@
             <td class="">
                 <a href="{{route('branch.orders.details',['id'=>$row['order_id']])}}">{{$row['order_id']}}</a>
             </td>
+            <td>{{$row['product']}}</td>
             <td>{{date('d M Y',strtotime($row['date']))}}</td>
             <td>{{$row['quantity']}}</td>
             <td>{{ \App\CentralLogics\Helpers::set_symbol($row['price']) }}</td>

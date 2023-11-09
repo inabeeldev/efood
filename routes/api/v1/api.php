@@ -24,7 +24,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
             Route::post('register', 'DeliveryManLoginController@registration');
         });
 
-        Route::group(['prefix' => 'kitchen', 'middleware' => 'app_activate:' . APPS['kitchen_app']['software_id']], function () {
+        Route::group(['prefix' => 'kitchen'], function () {
             Route::post('login', 'KitchenLoginController@login');
             Route::post('logout', 'KitchenLoginController@logout')->middleware('auth:kitchen_api');
         });

@@ -202,6 +202,10 @@ class OrderController extends Controller
             Toastr::warning(translate('Please assign delivery man first!'));
             return back();
         }
+        if ($order->order_status == 'delivered' && $order->payment_status == 'paid') {
+            Toastr::info(translate('Order is already marked as delivered! You cannot change status'));
+            return back();
+        }
         $order->order_status = $request->order_status;
         if($request->order_status == 'delivered') {
             $order->payment_status = 'paid';
@@ -435,6 +439,11 @@ class OrderController extends Controller
         $order = Order::where(['id' => $request->id, 'branch_id' => auth('branch')->id()])->first();
         if ($request->payment_status == 'paid' && $order['transaction_reference'] == null && $order['payment_method'] != 'cash_on_delivery' && $order['order_type'] != 'dine_in') {
             Toastr::warning(translate('Add your payment reference code first!'));
+            return back();
+        }
+
+        if ($order->payment_status == 'paid') {
+            Toastr::warning(translate('Your have already been paid. You cannot change payment status'));
             return back();
         }
         $order->payment_status = $request->payment_status;
