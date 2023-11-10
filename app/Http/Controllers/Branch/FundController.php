@@ -11,13 +11,16 @@ use App\Model\OrderDetail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
+use App\CentralLogics\Helpers as AppHelpers;
 use Illuminate\Http\Request;
 
 class FundController extends Controller
 {
     public function fundReceived()
     {
-        return view('branch-views.fund.sale-report');
+        $bwr = BranchWithdrawRequest::where('branch_id', auth('branch')->id())
+        ->paginate(AppHelpers::getPagination());;
+        return view('branch-views.fund.sale-report',compact('bwr'));
     }
 
     public function sale_filter(Request $request)

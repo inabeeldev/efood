@@ -14,6 +14,8 @@ use App\Model\Notification;
 class ReservationController extends Controller
 {
     public static function storeReservation(Request $request){
+        $remaining_slots = 0; // Define $remaining_slots here
+
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'reservation_type' => 'required',
@@ -22,7 +24,7 @@ class ReservationController extends Controller
                  function ($attribute, $value, $fail) use($request){
                     $reserveSlots = Reservation::where(['branch_id'=>$value,'reservation_type'=>$request->reservation_type,'date'=>$request->date,'status'=>1])->sum('number_of_reservations');
                     $branch = Branch::find($request->branch_id);
-                    $remaining_slots = 0;
+
                     if($request->reservation_type == "indoor_reservation"){
                         $remaining_slots = ($branch->indoor_slots - $reserveSlots);
                     }else if($request->reservation_type == "outdoor_reservation"){
@@ -47,7 +49,7 @@ class ReservationController extends Controller
         }
 
         try {
-            Reservation::insert([
+            $reservations1 = Reservation::insert([
                 'user_id' => $request->user_id,
                 'branch_id' => $request->branch_id,
                 'reservation_type' => $request->reservation_type,

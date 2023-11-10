@@ -35,7 +35,7 @@ class BranchController extends Controller
             foreach($branhes as $b){
                 $date['date'] = $request->date;
                 if($request->date){
-                    
+
                 }
                 $b->remaianing_indoor_slots = ($b->indoor_slots - DB::table('reservations')->where(function($query) use($request,$date){
                     if(count($date) > 0){
@@ -47,7 +47,7 @@ class BranchController extends Controller
                         $query->where($date);
                     }
                 })->where(['branch_id' => $b->id, 'reservation_type' => 'outdoor_reservation','status' => 1])->sum('number_of_reservations'));
-                $branches[] = $b; 
+                $branches[] = $b;
             }
             return response()->json($branhes, 200);
         } catch (\Exception $e) {
@@ -56,23 +56,21 @@ class BranchController extends Controller
     }
 
     public function getNearestBranches(Request $request){
-       try {
+        try {
             $branch = Branch::find($request->branch_id);
             $branhes = DB::select("SELECT
-            branches.name,branches.id,
+                branches.id,
+                MAX(branches.name) AS name,
                 6371 * acos(
-                    cos(
-                        radians( $branch->latitude ))  * cos(
-                        radians( branches.latitude ))  * cos(
-                        radians( branches.longitude ) - radians( $branch->longitude ))  + sin(
-                        radians( $branch->latitude ))  * sin(
-                    radians( branches.latitude ))) AS distance 
+                    cos(radians($branch->latitude)) * cos(radians(MAX(branches.latitude))) * cos(radians(MAX(branches.longitude)) - radians($branch->longitude)) + sin(radians($branch->latitude)) * sin(radians(MAX(branches.latitude)))
+                ) AS distance
             FROM
-                `branches` 
+                `branches`
             GROUP BY
-                `branches`.`id`");
+                branches.id");
+
             return response()->json($branhes, 200);
-       } catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             return response()->json([$e->getMessage()], 200);
         }
     }
@@ -83,7 +81,7 @@ class BranchController extends Controller
                 if($request->branch_id != ""){
                     $query->where('branches.id',$request->branch_id);
                 }
-                if($request->date != ""){   
+                if($request->date != ""){
                     // $query->where('reservations.date',$request->date);
                 }
             })
@@ -100,13 +98,13 @@ class BranchController extends Controller
                 )
             ->limit(1)
             ->get();
-            
+
             foreach($branhes as $b){
                 $b->remaianing_indoor_slots = ($b->total_indoor_slots - DB::table('reservations')->where(['branch_id' => $b->id, 'reservation_type' => 'indoor_reservation','status' => 1, 'reservations.date'=> $request->date])->sum('number_of_reservations'));
                 $b->remaianing_outoor_slots = ($b->total_outdoor_slots - DB::table('reservations')->where(['branch_id' => $b->id, 'reservation_type' => 'outdoor_reservation','status' => 1, 'reservations.date'=> $request->date])->sum('number_of_reservations'));
-                $branches[] = $b; 
+                $branches[] = $b;
             }
-           
+
             return response()->json($branhes, 200);
         } catch (\Exception $e) {
             return response()->json([$e->getMessage()], 200);

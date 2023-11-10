@@ -408,6 +408,11 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('export-sale-report', 'ReportController@export_sale_report')->name('export-sale-report');
         });
 
+        Route::group(['prefix' => 'withdraw_requests', 'as' => 'withdraw_requests.'], function () {
+            Route::get('branch', 'WithdrawRequestController@branchWithdraw')->name('branch');
+            Route::get('delivery_man', 'WithdrawRequestController@deliveryManWithdraw')->name('delivery_man');
+        });
+
         Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['actch', 'module:user_management']], function () {
             Route::post('add-point/{id}', 'CustomerController@add_point')->name('add-point');
             Route::get('set-point-modal-data/{id}', 'CustomerController@set_point_modal_data')->name('set-point-modal-data');

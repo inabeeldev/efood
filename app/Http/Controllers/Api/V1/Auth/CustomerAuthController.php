@@ -143,11 +143,13 @@ class CustomerAuthController extends Controller
 
     public function registration(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'f_name' => 'required',
             'l_name' => 'required',
             'email' => 'required|unique:users',
             'phone' => 'required|unique:users|min:5|max:20',
+            'is_corporate' => 'required|boolean',
             'password' => 'required|min:6',
         ], [
             'f_name.required' => translate('The first name field is required.'),
@@ -160,14 +162,19 @@ class CustomerAuthController extends Controller
 
         $restaurant_id = null;
         if($request->restaurant_id){
-           $restaurant_id = $request->restaurant_id; 
+           $restaurant_id = $request->restaurant_id;
         }
+
+        if($request->is_corporate){
+            $corporate = $request->is_corporate;
+         }
         $temporary_token = Str::random(40);
         $user = User::create([
             'f_name' => $request->f_name,
             'l_name' => $request->l_name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'is_corporate' => $request->is_corporate,
             'password' => bcrypt($request->password),
             'temporary_token' => $temporary_token,
             // 'restaurant_id' => $restaurant_id

@@ -716,6 +716,36 @@
                                     </li>
                                 </ul>
                             </li>
+
+
+
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/custom-role*') || Request::is('admin/withdraw_requests*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:" title="{{translate('Withdraw Requests')}}">
+                                    <i class="tio-incognito nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                            {{translate('Withdraw Requests')}}
+                                        </span>
+                                </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub " style="display: {{Request::is('admin/custom-role*') || Request::is('admin/withdraw_requests*')?'block':''}}">
+
+                                    <li class="nav-item {{Request::is('admin/withdraw_requests/branch')? 'active': ''}}">
+                                        <a class="nav-link" href="{{route('admin.withdraw_requests.branch')}}" title="{{translate('Branch')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                                    {{translate('Branch')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/withdraw_requests/delivery_man')? 'active': ''}}">
+                                        <a class="nav-link" href="{{route('admin.withdraw_requests.delivery_man')}}" title="{{translate('Delivery Man')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                                    {{translate('Delivery Man')}}</span>
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                            </li>
                         {{-- @endif --}}
 
                         {{-- @if(Helpers::module_permission_check(MANAGEMENT_SECTION['user_management'])) --}}

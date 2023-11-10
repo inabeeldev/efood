@@ -1,4 +1,4 @@
-@extends('layouts.branch.app')
+@extends('layouts.admin.app')
 
 @section('title', translate('Received Funds History'))
 
@@ -44,6 +44,7 @@
                                 <thead class="thead-light">
                                 <tr>
                                     <th>{{translate('SL')}}</th>
+                                    <th>{{translate('Branch')}}</th>
                                     <th>{{translate('Bank Name')}}</th>
                                     <th>{{translate('Account No')}}</th>
                                     <th>{{translate('Withdraw Amount')}}</th>
@@ -55,7 +56,11 @@
                                 @foreach($bwr as $key=>$wr)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
-
+                                        <td>
+                                            <div class="max-w300 text-wrap">
+                                                {{$wr->branch['name']}}
+                                            </div>
+                                        </td>
                                         <td>
                                             <div class="max-w300 text-wrap">
                                                 {{$wr['bank_name']}}

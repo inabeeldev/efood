@@ -1,4 +1,4 @@
-@extends('layouts.branch.app')
+@extends('layouts.admin.app')
 
 @section('title', translate('Received Funds History'))
 
@@ -30,7 +30,7 @@
                             <div class="col-sm-4 col-md-6 col-lg-8">
                                 <h5 class="d-flex align-items-center gap-2 mb-0">
                                     {{translate('received_funds_Table')}}
-                                    <span class="badge badge-soft-dark rounded-50 fz-12">{{ $bwr->count() }}</span>
+                                    <span class="badge badge-soft-dark rounded-50 fz-12">{{ $dwr->count() }}</span>
                                 </h5>
                             </div>
 
@@ -44,6 +44,7 @@
                                 <thead class="thead-light">
                                 <tr>
                                     <th>{{translate('SL')}}</th>
+                                    <th>{{translate('Delivery Man')}}</th>
                                     <th>{{translate('Bank Name')}}</th>
                                     <th>{{translate('Account No')}}</th>
                                     <th>{{translate('Withdraw Amount')}}</th>
@@ -52,10 +53,14 @@
                                 </thead>
 
                                 <tbody>
-                                @foreach($bwr as $key=>$wr)
+                                @foreach($dwr as $key=>$wr)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
-
+                                        <td>
+                                            <div class="max-w300 text-wrap">
+                                                {{$wr->deliveryMan['f_name']}} {{$wr->deliveryMan['l_name']}}
+                                            </div>
+                                        </td>
                                         <td>
                                             <div class="max-w300 text-wrap">
                                                 {{$wr['bank_name']}}
@@ -87,7 +92,7 @@
                         <div class="table-responsive mt-4 px-3">
                             <div class="d-flex justify-content-lg-end">
                                 <!-- Pagination -->
-                                {!! $bwr->links() !!}
+                                {!! $dwr->links() !!}
                             </div>
                         </div>
                     </div>

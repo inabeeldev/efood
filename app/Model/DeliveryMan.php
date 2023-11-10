@@ -16,6 +16,11 @@ class DeliveryMan extends Authenticatable
         return $this->hasMany(DMReview::class,'delivery_man_id');
     }
 
+    public function withdrawRequest()
+    {
+        return $this->hasMany(DeliveryManWithdrawRequest::class, 'delivery_man_id', 'id');
+    }
+
     public function rating()
     {
         return $this->hasMany(DMReview::class)

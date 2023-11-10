@@ -148,14 +148,14 @@
                                     @endif
                                     {{--                                    </div>--}}
 
-                                    <div class="d-flex gap-3 justify-content-sm-end mb-3">
+                                    {{-- <div class="d-flex gap-3 justify-content-sm-end mb-3">
                                         <div>{{translate('Payment_Status')}} :</div>
                                         @if($order['payment_status']=='paid')
                                             <span class="badge-soft-success px-2 rounded text-capitalize">{{translate('paid')}}</span>
                                         @else
                                             <span class="badge-soft-danger px-2 rounded text-capitalize">{{translate('unpaid')}}</span>
                                         @endif
-                                    </div>
+                                    </div> --}}
 
                                     <div class="d-flex gap-3 justify-content-sm-end mb-3 text-capitalize">
                                         {{translate('order')}} {{translate('type')}}
@@ -395,11 +395,11 @@
                                            onclick="route_alert('{{route('branch.orders.payment-status',['id'=>$order['id'],'payment_status'=>'unpaid'])}}','{{\App\CentralLogics\translate("Change status to unpaid ?")}}')"
                                            href="javascript:">{{translate('unpaid')}}</a>
                                     </div>
-                                    <label class="font-weight-bold text-dark fz-14">{{translate('Payment_Status')}}</label>
+                                    {{-- <label class="font-weight-bold text-dark fz-14">{{translate('Payment_Status')}}</label>
                                     <select name="order_status" onchange="route_alert('{{route('branch.orders.payment-status',['id'=>$order['id']])}}'+'&payment_status='+ this.value,'{{\App\CentralLogics\translate("Change status to ")}}'+ this.value)" class="status custom-select" data-id="100147">
                                         <option value="paid" {{$order['payment_status'] == 'paid'? 'selected' : ''}}> {{translate('paid')}}</option>
                                         <option value="unpaid" {{$order['payment_status'] == 'unpaid'? 'selected' : ''}}>{{translate('unpaid')}} </option>
-                                    </select>
+                                    </select> --}}
                                 </div>
                             @endif
                             @if($order->customer)

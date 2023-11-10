@@ -202,18 +202,16 @@ class OrderController extends Controller
             Toastr::warning(translate('Please assign delivery man first!'));
             return back();
         }
-        if ($order->order_status == 'delivered' && $order->payment_status == 'paid') {
-            Toastr::info(translate('Order is already marked as delivered! You cannot change status'));
-            return back();
-        }
+        // if ($order->order_status == 'delivered' && $order->branch_payment_status != 'paid') {
+        //     Toastr::info(translate('Order is already marked as delivered! You cannot change status'));
+        //     return back();
+        // }
+        // if($request->order_status == 'delivered') {
+        //     $order->payment_status = 'paid';
+        // }
+
         $order->order_status = $request->order_status;
-        if($request->order_status == 'delivered') {
-            $order->payment_status = 'paid';
-        }
-        $order->save();
-
-
-        if ($request->order_status == 'delivered' && $order->payment_status == 'paid') {
+        if ($request->order_status == 'delivered' && $order->branch_payment_status != 'paid' && $order->delivery_payment_status != 'paid') {
             $branch = Branch::find($order->branch_id);
             $platform_fee_restaurants = Helpers::get_business_settings('platform_fee_restaurants');
             $platform_fee_delivery_men = Helpers::get_business_settings('platform_fee_delivery_men');
@@ -244,9 +242,14 @@ class OrderController extends Controller
                     'wallet_amount' => $newDeliveryWalletAmount
                 ]);
             }
+
+            $order->branch_payment_status = 'paid';
+            $order->delivery_payment_status = 'paid';
         }
 
 
+
+        $order->save();
 
         $fcm_token=null;
         if($order->customer) {
