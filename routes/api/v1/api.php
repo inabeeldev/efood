@@ -196,7 +196,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
         Route::get('order/list', 'TableController@table_order_list');
     });
 
-    Route::group(['prefix' => 'kitchen', 'middleware' => 'auth:kitchen_api', 'app_activate:' . APPS['kitchen_app']['software_id']], function () {
+    Route::group(['prefix' => 'kitchen'], function () {
         Route::get('profile', 'KitchenController@get_profile');
         Route::get('order/list', 'KitchenController@get_order_list');
         Route::get('order/search', 'KitchenController@search');

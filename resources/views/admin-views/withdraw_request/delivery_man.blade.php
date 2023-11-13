@@ -49,6 +49,7 @@
                                     <th>{{translate('Account No')}}</th>
                                     <th>{{translate('Withdraw Amount')}}</th>
                                     <th>{{translate('status')}}</th>
+                                    <th>{{translate('change status')}}</th>
                                 </tr>
                                 </thead>
 
@@ -82,6 +83,12 @@
                                             @elseif($wr['status']=='unpaid')
                                                 <span class="badge-soft-warning px-2 py-1 rounded">{{translate('In Process')}}</span>
                                             @endif
+                                        </td>
+                                        <td>
+                                            <select name="status" onchange="route_alert('{{route('admin.withdraw_requests.delivery-payment-status',['id'=>$wr['id']])}}'+'&status='+ this.value,'{{\App\CentralLogics\translate("Change status to ")}}' + this.value)" class="status custom-select" data-id="100147">
+                                                <option value="paid" {{$wr['status'] == 'paid'? 'selected' : ''}}> {{translate('paid')}}</option>
+                                                <option value="unpaid" {{$wr['status'] == 'unpaid'? 'selected' : ''}}>{{translate('unpaid')}} </option>
+                                            </select>
                                         </td>
                                     </tr>
                                 @endforeach

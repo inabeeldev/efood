@@ -343,6 +343,12 @@
                                             <span class="text-truncate">{{translate('product_list')}}</span>
                                         </a>
                                     </li>
+                                    <li class="nav-item {{Request::is('branch/product/corporate/list') || Request::is('branch/product/corporate/add') ?'active':''}}">
+                                        <a class="nav-link " href="{{route('branch.product.corporate-products')}}" title="{{translate('Corporate Products')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('Corporate Products')}}</span>
+                                        </a>
+                                    </li>
                                     <li class="nav-item {{Request::is('branch/product/bulk-import')?'active':''}}">
                                         <a class="nav-link " href="{{route('branch.product.bulk-import')}}" title="{{translate('bulk import')}}">
                                             <span class="tio-circle nav-indicator-icon"></span>

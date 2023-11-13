@@ -200,6 +200,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('view/{id}', 'ProductController@view')->name('view');
             //ajax request
             Route::get('get-categories', 'ProductController@get_categories')->name('get-categories');
+
         });
 
         Route::group(['prefix' => 'orders', 'as' => 'orders.', 'middleware' => ['module:order_management']], function () {
@@ -411,6 +412,8 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
         Route::group(['prefix' => 'withdraw_requests', 'as' => 'withdraw_requests.'], function () {
             Route::get('branch', 'WithdrawRequestController@branchWithdraw')->name('branch');
             Route::get('delivery_man', 'WithdrawRequestController@deliveryManWithdraw')->name('delivery_man');
+            Route::get('branch-payment-status', 'WithdrawRequestController@branchPaymentStatus')->name('branch-payment-status');
+            Route::get('delivery-payment-status', 'WithdrawRequestController@deliveryPaymentStatus')->name('delivery-payment-status');
         });
 
         Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['actch', 'module:user_management']], function () {

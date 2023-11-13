@@ -1,6 +1,6 @@
-@extends('layouts.admin.app')
+@extends('layouts.branch.app')
 
-@section('title', translate('Received Funds History'))
+@section('title', translate('Corporate Products'))
 
 @push('css_or_js')
 
@@ -13,7 +13,7 @@
             <h2 class="h1 mb-0 d-flex align-items-center gap-2">
                 <img width="20" class="avatar-img" src="{{asset('public/assets/admin/img/icons/deliveryman.png')}}" alt="">
                 <span class="page-header-title">
-                    {{translate('Received Funds History')}}
+                    {{translate('Corporate Products')}}
                 </span>
             </h2>
         </div>
@@ -27,11 +27,19 @@
                 <div class="card">
                     <div class="card-top px-card pt-4">
                         <div class="row justify-content-between align-items-center gy-2">
-                            <div class="col-sm-4 col-md-6 col-lg-8">
+                            <div class="col-sm-4 col-md-6 col-lg-4">
                                 <h5 class="d-flex align-items-center gap-2 mb-0">
-                                    {{translate('received_funds_Table')}}
-                                    <span class="badge badge-soft-dark rounded-50 fz-12">{{ $bwr->count() }}</span>
+                                    {{translate('Corporate Products')}}
+                                    <span class="badge badge-soft-dark rounded-50 fz-12"></span>
                                 </h5>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="d-flex gap-3 justify-content-end text-nowrap flex-wrap">
+
+                                    <a href="{{route('branch.product.add-new')}}" class="btn btn-primary">
+                                        <i class="tio-add"></i> {{translate('add_New_Product')}}
+                                    </a>
+                                </div>
                             </div>
 
                         </div>
@@ -44,17 +52,16 @@
                                 <thead class="thead-light">
                                 <tr>
                                     <th>{{translate('SL')}}</th>
-                                    <th>{{translate('Branch')}}</th>
-                                    <th>{{translate('Bank Name')}}</th>
-                                    <th>{{translate('Account No')}}</th>
-                                    <th>{{translate('Withdraw Amount')}}</th>
-                                    <th>{{translate('status')}}</th>
-                                    <th>{{translate('change status')}}</th>
+                                    <th>{{translate('Image')}}</th>
+                                    <th>{{translate('Name')}}</th>
+                                    <th>{{translate('Price')}}</th>
+                                    <th>{{translate('Actions')}}</th>
+
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                @foreach($bwr as $key=>$wr)
+                                {{-- @foreach($bwr as $key=>$wr)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
                                         <td>
@@ -91,7 +98,7 @@
                                             </select>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -99,7 +106,7 @@
                         <div class="table-responsive mt-4 px-3">
                             <div class="d-flex justify-content-lg-end">
                                 <!-- Pagination -->
-                                {!! $bwr->links() !!}
+                                {{-- {!! $bwr->links() !!} --}}
                             </div>
                         </div>
                     </div>

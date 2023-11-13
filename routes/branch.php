@@ -105,6 +105,8 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         Route::get('view/{id}', 'ProductController@view')->name('view');
         //ajax request
         Route::get('get-categories', 'ProductController@get_categories')->name('get-categories');
+        Route::get('corporate/list', 'ProductController@listCorporateProducts')->name('corporate-products');
+
     });
 
     Route::group(['prefix' => 'attribute', 'as' => 'attribute.'], function () {

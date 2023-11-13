@@ -105,6 +105,10 @@ class ProductController extends Controller
             'view' => view('branch-views.product.partials._table', compact('products'))->render()
         ]);
     }
+     public function listCorporateProducts()
+     {
+        return view('branch-views.product.corporate_product');
+     }
 
     public function view($id)
     {

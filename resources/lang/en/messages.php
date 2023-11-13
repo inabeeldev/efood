@@ -1636,6 +1636,7 @@
   'pos_System' => 'Pos System',
   'General_Business_Information' => 'General Business Information',
   'Time_Zone' => 'Time Zone',
+  'Corporate Products' => 'Corporate Products',
   'Ex: 9.43896534' => 'Ex: 9.43896534',
   'Currency_Position' => 'Currency Position',
   'Platform Fee For Restautants' => 'Platform Fee For Restautants',
@@ -2493,5 +2494,8 @@
   'Withdraw Amount' => 'Withdraw Amount',
   'Transfer Completed' => 'Transfer Completed',
   'Withdraw Requests' => 'Withdraw Requests',
-  'Delivery Man' => 'Delivery Man',
+  'change status' => 'Change status',
+  'Actions' => 'Actions',
+  'FCM token updated failed.' => 'FCM token updated failed.',
+  'fund_management' => 'Fund management',
 );
