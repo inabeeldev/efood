@@ -14,7 +14,7 @@ class AddTotalAmountToOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->decimal('total_amount', 10, 2)->after('user_id')->default(null);
+            $table->decimal('total_amount', 10, 2)->after('user_id')->nullable();
         });
     }
 

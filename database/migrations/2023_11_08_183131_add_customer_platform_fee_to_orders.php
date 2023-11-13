@@ -14,7 +14,7 @@ class AddCustomerPlatformFeeToOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->decimal('customer_platform_fee', 10, 2)->after('delivery_charge')->default(null);
+            $table->decimal('customer_platform_fee', 10, 2)->after('delivery_charge')->nullable();
         });
     }
 

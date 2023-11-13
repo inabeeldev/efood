@@ -24,7 +24,7 @@
                         <div class="card">
                             <!-- POS Title -->
                             <div class="pos-title">
-                                <h4 class="mb-0">{{translate('kjjjjj')}}</h4>
+                                <h4 class="mb-0">{{translate('Select Product')}}</h4>
                             </div>
                             <!-- End POS Title -->
 

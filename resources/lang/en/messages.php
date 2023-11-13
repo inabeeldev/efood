@@ -2498,4 +2498,5 @@
   'Actions' => 'Actions',
   'FCM token updated failed.' => 'FCM token updated failed.',
   'fund_management' => 'Fund management',
+  'Select Product' => 'Select Product',
 );
