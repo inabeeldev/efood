@@ -16,6 +16,7 @@
                     {{translate('Corporate Products')}}
                 </span>
             </h2>
+            <span class="badge badge-soft-dark rounded-50 fz-14">{{ $cps->count() }}</span>
         </div>
 
         <!-- End Page Header -->
@@ -36,8 +37,8 @@
                             <div class="col-lg-8">
                                 <div class="d-flex gap-3 justify-content-end text-nowrap flex-wrap">
 
-                                    <a href="{{route('branch.product.add-new')}}" class="btn btn-primary">
-                                        <i class="tio-add"></i> {{translate('add_New_Product')}}
+                                    <a href="{{route('branch.product.add-corporate-product')}}" class="btn btn-primary">
+                                        <i class="tio-add"></i> {{translate('add_New_Corporate_Product')}}
                                     </a>
                                 </div>
                             </div>
@@ -53,52 +54,52 @@
                                 <tr>
                                     <th>{{translate('SL')}}</th>
                                     <th>{{translate('Image')}}</th>
-                                    <th>{{translate('Name')}}</th>
-                                    <th>{{translate('Price')}}</th>
+                                    <th>{{translate('Title')}}</th>
+                                    <th>{{translate('status')}}</th>
                                     <th>{{translate('Actions')}}</th>
 
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                {{-- @foreach($bwr as $key=>$wr)
+                                @foreach($cps as $key=>$cp)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
                                         <td>
-                                            <div class="max-w300 text-wrap">
-                                                {{$wr->branch['name']}}
+                                            <div class="media align-items-center gap-3">
+                                                <div class="avatar">
+                                                    <img src="{{asset('storage/app/public/corporate')}}/{{$cp['image']}}" class="rounded img-fit"
+                                                        onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'">
+                                                </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="max-w300 text-wrap">
-                                                {{$wr['bank_name']}}
+                                                {{$cp['title']}}
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div>
+                                                <label class="switcher">
+                                                    <input id="{{$cp['id']}}" class="switcher_input" type="checkbox" {{$cp['status']==1? 'checked' : ''}} data-url="{{route('branch.product.status-corporate-product',[$cp['id'],0])}}" onchange="status_change(this)">
+
+                                                    <span class="switcher_control"></span>
+                                                </label>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="max-w300 text-wrap">
-                                                {{ str_repeat('*', strlen($wr['account_no']) - 4) . substr($wr['account_no'], -4) }}
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button type="button" class="btn btn-outline-danger btn-sm delete square-btn"
+                                                onclick="form_alert('product-{{$cp['id']}}','{{translate('Want to delete this item ?')}}')"><i class="tio-delete"></i></button>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="max-w300 text-wrap">
-                                                {{$wr['amount']}}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if($wr['status']=='paid')
-                                                <span class="badge-soft-success px-2 py-1 rounded">{{translate('Transfer Completed')}}</span>
-                                            @elseif($wr['status']=='unpaid')
-                                                <span class="badge-soft-warning px-2 py-1 rounded">{{translate('In Process')}}</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <select name="status" onchange="route_alert('{{route('admin.withdraw_requests.branch-payment-status',['id'=>$wr['id']])}}'+'&status='+ this.value,'{{\App\CentralLogics\translate("Change status to ")}}' + this.value)" class="status custom-select" data-id="100147">
-                                                <option value="paid" {{$wr['status'] == 'paid'? 'selected' : ''}}> {{translate('paid')}}</option>
-                                                <option value="unpaid" {{$wr['status'] == 'unpaid'? 'selected' : ''}}>{{translate('unpaid')}} </option>
-                                            </select>
+                                            <form action="{{route('branch.product.delete-corporate-product',[$cp['id']])}}"
+                                                method="post" id="product-{{$cp['id']}}">
+                                                @csrf @method('delete')
+                                            </form>
                                         </td>
                                     </tr>
-                                @endforeach --}}
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -106,7 +107,7 @@
                         <div class="table-responsive mt-4 px-3">
                             <div class="d-flex justify-content-lg-end">
                                 <!-- Pagination -->
-                                {{-- {!! $bwr->links() !!} --}}
+                                {!! $cps->links() !!}
                             </div>
                         </div>
                     </div>

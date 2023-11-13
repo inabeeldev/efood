@@ -106,6 +106,10 @@ Route::group(['namespace' => 'Branch', 'as' => 'branch.'], function () {
         //ajax request
         Route::get('get-categories', 'ProductController@get_categories')->name('get-categories');
         Route::get('corporate/list', 'ProductController@listCorporateProducts')->name('corporate-products');
+        Route::get('corporate/add-product', 'ProductController@addCorporateProduct')->name('add-corporate-product');
+        Route::post('corporate/store-product', 'ProductController@storeCorporateProduct')->name('store-corporate-product');
+        Route::get('corporate/status-product/{id}/{status}', 'ProductController@statusCorporateProduct')->name('status-corporate-product');
+        Route::delete('corporate/delete-product/{id}', 'ProductController@deleteCorporateProduct')->name('delete-corporate-product');
 
     });
 

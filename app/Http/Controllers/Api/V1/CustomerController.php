@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\CentralLogics\Helpers;
-use App\Http\Controllers\Controller;
-use App\Model\CustomerAddress;
-use App\Model\Newsletter;
-use App\Model\Order;
-use App\Model\OrderDetail;
-use App\Model\PointTransitions;
 use App\User;
+use App\Model\Order;
+use App\Model\Newsletter;
+use App\Model\OrderDetail;
 use Illuminate\Http\Request;
+use App\CentralLogics\Helpers;
+use App\Model\CustomerAddress;
+use App\Model\PointTransitions;
+use App\Model\CustomerIncentive;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
@@ -227,5 +228,43 @@ class CustomerController extends Controller
         }
 
         return response()->json(['status_code' => 200, 'message' => translate('Successfully deleted')], 200);
+    }
+
+    public function customerIncentiveApi(Request $request)
+    {
+        $user = User::find($request->user()->id);
+        $userId = $user->id;
+        $customers = User::withCount('orders')->orderBy('orders_count', 'desc')->take(5)->get();
+
+        $customerIncentives = CustomerIncentive::with('user', 'notification')
+            ->when($userId, function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->where('status', 1)
+            ->latest()
+            ->paginate(Helpers::getPagination());
+
+        // Assuming you want to include both customers and customerIncentives in the API response
+        $data = [
+            // 'customers' => $customers,
+            'customerIncentives' => $customerIncentives,
+        ];
+
+        return response()->json($data);
+    }
+
+    public function allCustomerIncentiveApi()
+    {
+
+        $customerIncentives = CustomerIncentive::with('user', 'notification')
+        ->where('status', 1)
+        ->latest()->paginate(Helpers::getPagination());
+
+        // Assuming you want to include both customers and customerIncentives in the API response
+        $data = [
+            'customerIncentives' => $customerIncentives
+        ];
+
+        return response()->json($data);
     }
 }

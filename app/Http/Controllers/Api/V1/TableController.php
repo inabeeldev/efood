@@ -168,7 +168,7 @@ class TableController extends Controller
         }
 
         $branch_table_token = TableOrder::where(['branch_table_token' => $request->branch_table_token])->first();
-
+        // dd($branch_table_token);
         if(isset($branch_table_token)){
             $order = Order::where(['id' => $request->order_id, 'table_order_id' => $branch_table_token->id])->first();
             $details = OrderDetail::where(['order_id' => $order->id])->get();

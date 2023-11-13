@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Branch;
 
-use App\CentralLogics\Helpers;
-use App\Http\Controllers\Controller;
-use App\Model\Branch;
-use App\Model\BranchWithdrawRequest;
-use App\Model\Order;
-use App\Model\OrderDetail;
-use Barryvdh\DomPDF\Facade as PDF;
-use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
-use App\CentralLogics\Helpers as AppHelpers;
+use App\Model\Order;
+use App\Model\Branch;
+use App\Model\OrderDetail;
 use Illuminate\Http\Request;
+use App\CentralLogics\Helpers;
+use Barryvdh\DomPDF\Facade as PDF;
+use App\Http\Controllers\Controller;
+use App\Model\BranchWithdrawRequest;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Validator;
+use App\CentralLogics\Helpers as AppHelpers;
 
 class FundController extends Controller
 {
@@ -74,14 +75,37 @@ class FundController extends Controller
 
     public function requestWithdraw(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'bank_name' => 'required',
+            'routing_number' => 'required',
+            'account_title' => 'required',
+            'account_no' => 'required',
+            'amount' => 'required',
+            'branch_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+
         $input = $request->all();
-        // dd($input);
-        BranchWithdrawRequest::create($input);
         $branch = Branch::find($request->branch_id);
+
+        // Check if the wallet amount is less than the requested amount
+        if ($branch->wallet_amount < $request->amount) {
+            Toastr::error(translate('Insufficient balance in your wallet.'));
+            return redirect()->back();
+        }
+
+        // Update the wallet amount and create withdrawal request
         $branch->update([
             'wallet_amount' => $branch->wallet_amount - $request->amount
         ]);
+
+        BranchWithdrawRequest::create($input);
+
         Toastr::info(translate('We have received your request. You will soon get your amount!'));
         return redirect()->back();
     }
+
 }

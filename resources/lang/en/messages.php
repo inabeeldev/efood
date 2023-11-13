@@ -1649,6 +1649,7 @@
   'Incentive for Customer Added!' => 'Incentive for Customer Added!',
   'digit_After_Decimal_Point ' => 'Digit After Decimal Point ',
   'Company_Coptyright_Text' => 'Company Coptyright Text',
+  'add_New_Corporate_Product' => 'Add New Corporate Product',
   'min_Order_value' => 'Min Order value',
   'Food_Preparation_Time' => 'Food Preparation Time',
   '( in_Minute )' => '( in Minute )',
@@ -2499,4 +2500,9 @@
   'FCM token updated failed.' => 'FCM token updated failed.',
   'fund_management' => 'Fund management',
   'Select Product' => 'Select Product',
+  'Write' => 'Write',
+  'Corporate Product Added Successfully!' => 'Corporate Product Added Successfully!',
+  'Add new Corporate Package' => 'Add new Corporate Package',
+  'Corporate Product status updated!' => 'Corporate Product status updated!',
+  'Corporate Product removed!' => 'Corporate Product removed!',
 );

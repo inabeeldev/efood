@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Branch;
 
 use App\CentralLogics\Helpers;
+use App\Model\CorporateProduct;
 use App\Http\Controllers\Controller;
 use App\Model\Category;
 use App\Model\Product;
@@ -107,8 +108,69 @@ class ProductController extends Controller
     }
      public function listCorporateProducts()
      {
-        return view('branch-views.product.corporate_product');
+        $cps = CorporateProduct::where('branch_id', auth('branch')->id())->paginate(Helpers::getPagination());
+        return view('branch-views.product.corporate_product',compact('cps'));
      }
+
+    public function addCorporateProduct()
+    {
+        return view('branch-views.product.add_corporate_product');
+    }
+
+    public function storeCorporateProduct(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'description' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+        //uniqueness check
+
+
+        //image upload
+        if (!empty($request->file('image'))) {
+            $image_name = Helpers::upload('corporate/', 'png', $request->file('image'));
+        } else {
+            $image_name = 'def.png';
+        }
+
+        //into db
+        $cp = new CorporateProduct();
+        $cp->title = $request->title;
+        $cp->description = $request->description;
+        $cp->branch_id = auth('branch')->id();
+        $cp->image = $image_name;
+        $cp->save();
+
+
+
+        Toastr::success(translate('Corporate Product Added Successfully!'));
+        return redirect()->route('branch.product.corporate-products');
+    }
+
+    public function statusCorporateProduct(Request $request)
+    {
+        $cp = CorporateProduct::find($request->id);
+        $cp->status = $request->status;
+        $cp->save();
+        Toastr::success(translate('Corporate Product status updated!'));
+        return back();
+    }
+
+    public function deleteCorporateProduct(Request $request)
+    {
+        $cp = CorporateProduct::find($request->id);
+        $cp->delete();
+        Toastr::success(translate('Corporate Product removed!'));
+        return back();
+    }
 
     public function view($id)
     {

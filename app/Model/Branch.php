@@ -31,6 +31,11 @@ class Branch extends Authenticatable
         return $this->hasMany(BranchWithdrawRequest::class, 'branch_id', 'id');
     }
 
+    public function corporateProducts()
+    {
+        return $this->hasMany(CorporateProduct::class);
+    }
+
 
     public function products(){
         return $this->hasMany(Product::class, 'branch_id', 'id');

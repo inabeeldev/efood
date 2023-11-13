@@ -49,6 +49,12 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
             Route::post('send/{sender_type}', 'ConversationController@store_message_by_order');
         });
 
+        Route::group(['prefix' => 'fund'], function () {
+            Route::get('get-wallet-amount', 'FundController@walletAmount');
+            Route::post('withdraw', 'FundController@deliveryManWithdraw');
+            Route::get('withdraw-history', 'FundController@deliveryManWithdrawHistory');
+        });
+
         Route::group(['prefix' => 'reviews', 'middleware' => ['auth:api']], function () {
             Route::get('/{delivery_man_id}', 'DeliveryManReviewController@get_reviews'); //not used
             Route::get('rating/{delivery_man_id}', 'DeliveryManReviewController@get_rating'); //not used
@@ -101,6 +107,13 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
         Route::get('rating/{product_id}', 'ProductController@get_product_rating');
         Route::post('reviews/submit', 'ProductController@submit_product_review')->middleware('auth:api');
         Route::get('featured_products', 'ProductController@featuredProduct')->middleware('auth:api');
+        Route::get('give_away_products', 'ProductController@giveAway');
+
+    });
+
+    Route::group(['prefix' => 'corporate-products'], function () {
+        Route::get('/list', 'CorporateController@list')->middleware('auth:api');
+        Route::get('/get_product/{id}', 'CorporateController@getProduct')->middleware('auth:api');
     });
 
     Route::group(['prefix' => 'banners'], function () {
@@ -133,6 +146,10 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
             Route::post('add', 'CustomerController@add_new_address');
             Route::put('update/{id}', 'CustomerController@update_address');
             Route::delete('delete', 'CustomerController@delete_address');
+        });
+        Route::group(['prefix' => 'incentive'], function () {
+            Route::get('customer-incentives', 'CustomerController@customerIncentiveApi');
+            Route::get('all-customers-incentives', 'CustomerController@allCustomerIncentiveApi');
         });
 
         Route::group(['prefix' => 'order'], function () {
@@ -189,8 +206,8 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
 
     Route::group(['prefix' => 'table'], function () {
         Route::get('list', 'TableController@list');
-        Route::get('product/type', 'TableController@filter_by_product_type');
-        Route::get('promotional/page', 'TableController@get_promotional_page');
+        // Route::get('product/type', 'TableController@filter_by_product_type');
+        // Route::get('promotional/page', 'TableController@get_promotional_page');
         Route::post('order/place', 'TableController@place_order');
         Route::get('order/details', 'TableController@get_order_details');
         Route::get('order/list', 'TableController@table_order_list');

@@ -6,6 +6,7 @@ use App\User;
 use App\Model\Branch;
 use App\Model\Review;
 use App\Model\Product;
+use App\Model\GiveAway;
 use App\Model\Translation;
 use Illuminate\Http\Request;
 use App\CentralLogics\Helpers;
@@ -221,5 +222,22 @@ class ProductController extends Controller
         $review->save();
 
         return response()->json(['message' => translate('review_submit_success')], 200);
+    }
+
+    public function giveAway(Request $request)
+    {
+        $ga_products = GiveAway::with('product')
+            ->get();
+
+        // Extract only the 'product' relation from the results
+        $productData = $ga_products->pluck('product');
+        $products = Helpers::product_data_formatting($productData, true);
+
+
+        // Calculate delivery fee for each product
+        $customerLocation = ProductLogic::getCustomerLocation($request['location']); // Get customer's location
+        $products = ProductLogic::calculateDeliveryFee($products, $customerLocation);
+
+        return response()->json($products);
     }
 }
