@@ -43,6 +43,11 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
         Route::put('update-fcm-token', 'DeliverymanController@update_fcm_token');
         Route::get('order-model', 'DeliverymanController@order_model');
 
+        Route::group(['prefix' => 'delivery-request'], function () {
+            Route::get('get-all-requests', 'DeliveryRequestController@allRequests');
+            Route::get('get-delivery-request', 'DeliveryRequestController@getDeliveryRequests');
+            Route::put('status/{order_id}', 'DeliveryRequestController@changeStatus');
+        });
         //delivery-man message
         Route::group(['prefix' => 'message'], function () {
             Route::post('get-message', 'ConversationController@get_order_message_for_dm');

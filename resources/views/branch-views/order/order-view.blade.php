@@ -7,7 +7,7 @@
 @endpush
 
 @section('content')
-    <div class="content container-fluid">
+    <div class="content container-fluid ">
         <!-- Page Header -->
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <h2 class="h1 mb-0 d-flex align-items-center gap-1">
@@ -646,23 +646,11 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body for_loader">
                     <ul class="list-group">
-                        {{-- @foreach(\App\Model\DeliveryMan::where(['is_active'=> 1, 'branch_id' => auth('branch')->id()])->get() as $deliveryMan)
-                            <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between">
-                                <div class="media align-items-center gap-2 flex-wrap">
-                                    <div class="avatar">
-                                        <img class="img-fit rounded-circle" loading="lazy" decoding="async"
-                                             onerror="this.src='{{asset('public/assets/admin/img/160x160/img1.jpg')}}'"
-                                             src="{{asset('/storage/app/public/delivery-man/'.$deliveryMan->image)}}" alt="Jhon Doe">
-                                    </div>
-                                    <span>{{$deliveryMan['f_name'].' '.$deliveryMan['l_name']}}</span>
-                                </div>
-                                <a id="{{$deliveryMan->id}}" onclick="addDeliveryMan(this.id)" class="btn btn-primary btn-sm">{{translate('Assign')}}</a>
-                            </li>
-                        @endforeach --}}
+
                         @foreach($nearestDeliveryMan as $deliveryMan)
-                        <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between">
+                        <li class="list-group-item d-flex flex-wrap align-items-center gap-3 justify-content-between ">
                             <div class="media align-items-center gap-2 flex-wrap">
                                 <div class="avatar">
                                     <img class="img-fit rounded-circle" loading="lazy" decoding="async"
@@ -833,12 +821,18 @@
 @push('script_2')
     <script>
         function addDeliveryMan(id) {
+            // Show loading state
+            showLoading();
+
             $.ajax({
                 type: "GET",
                 url: '{{url('/')}}/branch/orders/add-delivery-man/{{$order['id']}}/' + id,
                 data: $('#product_form').serialize(),
                 success: function (data) {
-                    if(data.status == true) {
+                    // Hide loading state on success
+                    hideLoading();
+
+                    if (data.status == true) {
                         toastr.success('{{\App\CentralLogics\translate("Delivery man successfully assigned/changed")}}', {
                             CloseButton: true,
                             ProgressBar: true
@@ -846,7 +840,7 @@
                         setTimeout(function () {
                             location.reload();
                         }, 2000)
-                    }else{
+                    } else {
                         toastr.error('{{\App\CentralLogics\translate("Deliveryman man can not assign/change in that status")}}', {
                             CloseButton: true,
                             ProgressBar: true
@@ -854,12 +848,28 @@
                     }
                 },
                 error: function () {
+                    // Hide loading state on error
+                    hideLoading();
+
                     toastr.error('{{\App\CentralLogics\translate("Add valid data")}}', {
                         CloseButton: true,
                         ProgressBar: true
                     });
                 }
             });
+        }
+
+        function showLoading() {
+            console.log('lod');
+            // Display loading indicator or overlay
+            // Using Bootstrap spinner
+            $('.for_loader').append('<div class="overlay" style="background: rgba(255, 255, 255, 0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;"><div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status"><span class="sr-only">Loading...</span></div><p style="margin-top: 10px; font-size: 18px; color: red; font-weight: bold;">Please wait untill Errand guy accepts delivery request...</p></div>');
+
+        }
+
+        function hideLoading() {
+            // Hide loading indicator or overlay
+            $('.overlay').remove();
         }
 
         function last_location_view() {

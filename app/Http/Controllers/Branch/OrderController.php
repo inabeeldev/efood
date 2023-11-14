@@ -359,15 +359,95 @@ class OrderController extends Controller
         return back();
     }
 
+    // public function add_delivery_man($order_id, $delivery_man_id)
+    // {
+    //     if ($delivery_man_id == 0) {
+    //         return response()->json([], 401);
+    //     }
+    //     $order = Order::where(['id' => $order_id, 'branch_id' => auth('branch')->id()])->first();
+    //     if($order->order_status == 'delivered' || $order->order_status == 'returned' || $order->order_status == 'failed' || $order->order_status == 'canceled' || $order->order_status == 'scheduled') {
+    //         return response()->json(['status' => false], 200);
+    //     }
+    //     // Create a delivery request with 'pending' status
+    //     $deliveryRequest = new DeliveryRequest([
+    //         'order_id' => $order_id,
+    //         'deliveryman_id' => $delivery_man_id,
+    //         'status' => 'pending',
+    //     ]);
+    //     $deliveryRequest->save();
+
+    //     $maxWaitTime = 15; // Maximum wait time in seconds
+    //     $startTime = time(); // Record the start time
+
+    //     while (true) {
+    //         // Check if the maximum wait time has been reached
+    //         if (time() - $startTime >= $maxWaitTime) {
+    //             // Handle the case where the delivery man didn't respond within the allowed time
+    //             return response()->json(['status' => false], 200);
+    //         }
+
+    //         // Check the status of the delivery request
+    //         $deliveryRequest = DeliveryRequest::where('order_id', $order_id)
+    //             ->where('deliveryman_id', $delivery_man_id)
+    //             ->first();
+
+    //         if ($deliveryRequest && $deliveryRequest->status === 'accepted') {
+    //             // The delivery man accepted the request, proceed with assignment
+    //             $order->delivery_man_id = $delivery_man_id;
+    //             $order->save();
+
+    //             // Send notifications and other processing here
+    //             $fcm_token = $order->delivery_man->fcm_token;
+    //         $customer_fcm_token = null;
+    //             if(isset($order->customer)) {
+    //                 $customer_fcm_token = $order->customer->cm_firebase_token;
+    //             }
+    //             $value = Helpers::order_status_update_message('del_assign');
+    //             try {
+    //                 if ($value) {
+    //                     $data = [
+    //                         'title' => translate('Order'),
+    //                         'description' => $value,
+    //                         'order_id' => $order_id,
+    //                         'image' => '',
+    //                         'type'=>'order_status',
+    //                     ];
+    //                     Helpers::send_push_notif_to_device($fcm_token, $data);
+    //                     if(isset($order->customer)) {
+    //                         $data['description'] = Helpers::order_status_update_message('customer_notify_message');
+    //                     }
+    //                     if(isset($customer_fcm_token)) {
+    //                         Helpers::send_push_notif_to_device($customer_fcm_token, $data);
+    //                     }
+    //                 }
+    //             } catch (\Exception $e) {
+    //                 Toastr::warning(translate('Push notification failed for DeliveryMan!'));
+    //             }
+
+    //             return response()->json(['status' => true], 200);
+    //         } elseif ($deliveryRequest && $deliveryRequest->status === 'rejected') {
+    //             // The delivery man rejected the request
+    //             // Handle the case where the delivery man rejects the request
+    //             return response()->json(['status' => false], 200);
+    //         }
+
+    //         // Sleep for a short interval before checking again
+    //         sleep(1); // Adjust the sleep time as needed
+    //     }
+    // }
+
     public function add_delivery_man($order_id, $delivery_man_id)
     {
         if ($delivery_man_id == 0) {
             return response()->json([], 401);
         }
+
         $order = Order::where(['id' => $order_id, 'branch_id' => auth('branch')->id()])->first();
-        if($order->order_status == 'delivered' || $order->order_status == 'returned' || $order->order_status == 'failed' || $order->order_status == 'canceled' || $order->order_status == 'scheduled') {
+
+        if ($order->order_status == 'delivered' || $order->order_status == 'returned' || $order->order_status == 'failed' || $order->order_status == 'canceled' || $order->order_status == 'scheduled') {
             return response()->json(['status' => false], 200);
         }
+
         // Create a delivery request with 'pending' status
         $deliveryRequest = new DeliveryRequest([
             'order_id' => $order_id,
@@ -382,6 +462,17 @@ class OrderController extends Controller
         while (true) {
             // Check if the maximum wait time has been reached
             if (time() - $startTime >= $maxWaitTime) {
+                // Change the status to 'rejected' if no response within the allowed time
+                $deliveryRequest = DeliveryRequest::where('order_id', $order_id)
+                    ->where('deliveryman_id', $delivery_man_id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                if ($deliveryRequest) {
+                    $deliveryRequest->status = 'rejected';
+                    $deliveryRequest->save();
+                }
+
                 // Handle the case where the delivery man didn't respond within the allowed time
                 return response()->json(['status' => false], 200);
             }
@@ -389,6 +480,7 @@ class OrderController extends Controller
             // Check the status of the delivery request
             $deliveryRequest = DeliveryRequest::where('order_id', $order_id)
                 ->where('deliveryman_id', $delivery_man_id)
+                ->orderBy('created_at', 'desc')
                 ->first();
 
             if ($deliveryRequest && $deliveryRequest->status === 'accepted') {
@@ -398,11 +490,14 @@ class OrderController extends Controller
 
                 // Send notifications and other processing here
                 $fcm_token = $order->delivery_man->fcm_token;
-            $customer_fcm_token = null;
-                if(isset($order->customer)) {
+                $customer_fcm_token = null;
+
+                if (isset($order->customer)) {
                     $customer_fcm_token = $order->customer->cm_firebase_token;
                 }
+
                 $value = Helpers::order_status_update_message('del_assign');
+
                 try {
                     if ($value) {
                         $data = [
@@ -410,13 +505,15 @@ class OrderController extends Controller
                             'description' => $value,
                             'order_id' => $order_id,
                             'image' => '',
-                            'type'=>'order_status',
+                            'type' => 'order_status',
                         ];
                         Helpers::send_push_notif_to_device($fcm_token, $data);
-                        if(isset($order->customer)) {
+
+                        if (isset($order->customer)) {
                             $data['description'] = Helpers::order_status_update_message('customer_notify_message');
                         }
-                        if(isset($customer_fcm_token)) {
+
+                        if (isset($customer_fcm_token)) {
                             Helpers::send_push_notif_to_device($customer_fcm_token, $data);
                         }
                     }
@@ -432,9 +529,10 @@ class OrderController extends Controller
             }
 
             // Sleep for a short interval before checking again
-            sleep(2); // Adjust the sleep time as needed
+            sleep(1); // Adjust the sleep time as needed
         }
     }
+
 
 
     public function payment_status(Request $request)
