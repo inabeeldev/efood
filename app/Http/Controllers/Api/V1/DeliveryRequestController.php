@@ -97,49 +97,76 @@ class DeliveryRequestController extends Controller
 
     public function changeOrderStatus(Request $request, $orderId)
     {
-        $order = Order::where('id' , $orderId)->first();
-        $order->order_status = $request->order_status;
-        if ($request->order_status == 'delivered' && $order->branch_payment_status != 'paid' && $order->delivery_payment_status != 'paid') {
-            $branch = Branch::find($order->branch_id);
-            $platform_fee_restaurants = Helpers::get_business_settings('platform_fee_restaurants');
-            $platform_fee_delivery_men = Helpers::get_business_settings('platform_fee_delivery_men');
+        $validator = Validator::make($request->all(), [
+            'order_status' => 'required|in:delivered',
+            'token' => 'required',
+        ]);
 
-            if ($branch) {
-                $platform_fee_branch = ($order->order_amount / 100) * $platform_fee_restaurants;
-
-                $remainingAmount = $order->order_amount - $platform_fee_branch;
-
-                $currentWalletAmount = $branch->wallet_amount;
-                $newWalletAmount = $currentWalletAmount + $remainingAmount;
-
-                $branch->update([
-                    'wallet_amount' => $newWalletAmount
-                ]);
-            }
-
-            $delivery_man = DeliveryMan::find($order->delivery_man_id);
-
-            if ($delivery_man) {
-                $platform_fee_delivery = ($order->delivery_charge / 100) * $platform_fee_delivery_men;
-                $remainingDeliveryAmount = $order->delivery_charge - $platform_fee_delivery;
-
-                $currentDeliveryWalletAmount = $delivery_man->wallet_amount;
-                $newDeliveryWalletAmount = $currentDeliveryWalletAmount + $remainingDeliveryAmount;
-
-                $delivery_man->update([
-                    'wallet_amount' => $newDeliveryWalletAmount
-                ]);
-            }
-
-            $order->branch_payment_status = 'paid';
-            $order->delivery_payment_status = 'paid';
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
 
+        $deliveryMan = DeliveryMan::where('auth_token', $request['token'])->first();
+        if (!$deliveryMan) {
+            return response()->json([
+                'errors' => [
+                    ['code' => 'delivery-man', 'message' => translate('Invalid token!')]
+                ]
+            ], 401);
+        }
 
+        $order = Order::where(['id' => $orderId, 'delivery_man_id' => $deliveryMan->id])->first();
+        if (!$order) {
+            return response()->json(['status' => false, 'message' => 'Order not found'], 404);
+        }
+
+        $order->order_status = $request->order_status;
+
+        if ($request->order_status == 'delivered' && $order->branch_payment_status != 'paid' && $order->delivery_payment_status != 'paid') {
+            $this->handlePayment($order);
+        }
 
         $order->save();
 
+        return response()->json(['status' => true, 'message' => 'Order status changed to delivered successfully'], 200);
     }
+
+    private function handlePayment(Order $order)
+    {
+        $branch = Branch::find($order->branch_id);
+        $platformFeeRestaurants = Helpers::get_business_settings('platform_fee_restaurants');
+        $platformFeeDeliveryMen = Helpers::get_business_settings('platform_fee_delivery_men');
+
+        if ($branch) {
+            $this->handleBranchPayment($order, $branch, $platformFeeRestaurants);
+        }
+
+        $this->handleDeliveryManPayment($order, $platformFeeDeliveryMen);
+    }
+
+    private function handleBranchPayment(Order $order, Branch $branch, $platformFeeRestaurants)
+    {
+        $platformFeeBranch = ($order->order_amount / 100) * $platformFeeRestaurants;
+        $remainingAmount = $order->order_amount - $platformFeeBranch;
+
+        $branch->update(['wallet_amount' => $branch->wallet_amount + $remainingAmount]);
+        $order->branch_payment_status = 'paid';
+    }
+
+    private function handleDeliveryManPayment(Order $order, $platformFeeDeliveryMen)
+    {
+        $platformFeeDelivery = ($order->delivery_charge / 100) * $platformFeeDeliveryMen;
+        $remainingDeliveryAmount = $order->delivery_charge - $platformFeeDelivery;
+
+        $deliveryMan = DeliveryMan::find($order->delivery_man_id);
+
+        if ($deliveryMan) {
+            $deliveryMan->update(['wallet_amount' => $deliveryMan->wallet_amount + $remainingDeliveryAmount]);
+        }
+
+        $order->delivery_payment_status = 'paid';
+    }
+
 
 
 
