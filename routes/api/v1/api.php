@@ -47,6 +47,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware' => 'localization'], function
             Route::get('get-all-requests', 'DeliveryRequestController@allRequests');
             Route::get('get-delivery-request', 'DeliveryRequestController@getDeliveryRequests');
             Route::put('status/{order_id}', 'DeliveryRequestController@changeStatus');
+            Route::put('order-status/{order_id}', 'DeliveryRequestController@changeOrderStatus');
         });
         //delivery-man message
         Route::group(['prefix' => 'message'], function () {

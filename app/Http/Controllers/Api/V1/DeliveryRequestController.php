@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Model\Order;
+use App\Model\Branch;
 use App\Model\DeliveryMan;
 use Illuminate\Http\Request;
 use App\CentralLogics\Helpers;
-use App\Http\Controllers\Controller;
 use App\Model\DeliveryRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class DeliveryRequestController extends Controller
@@ -91,6 +93,52 @@ class DeliveryRequestController extends Controller
 
         // If the status is neither 'accepted' nor 'rejected'
         return response()->json(['status' => false, 'message' => 'Invalid status provided'], 400);
+    }
+
+    public function changeOrderStatus(Request $request, $orderId)
+    {
+        $order = Order::where('id' , $orderId)->first();
+        $order->order_status = $request->order_status;
+        if ($request->order_status == 'delivered' && $order->branch_payment_status != 'paid' && $order->delivery_payment_status != 'paid') {
+            $branch = Branch::find($order->branch_id);
+            $platform_fee_restaurants = Helpers::get_business_settings('platform_fee_restaurants');
+            $platform_fee_delivery_men = Helpers::get_business_settings('platform_fee_delivery_men');
+
+            if ($branch) {
+                $platform_fee_branch = ($order->order_amount / 100) * $platform_fee_restaurants;
+
+                $remainingAmount = $order->order_amount - $platform_fee_branch;
+
+                $currentWalletAmount = $branch->wallet_amount;
+                $newWalletAmount = $currentWalletAmount + $remainingAmount;
+
+                $branch->update([
+                    'wallet_amount' => $newWalletAmount
+                ]);
+            }
+
+            $delivery_man = DeliveryMan::find($order->delivery_man_id);
+
+            if ($delivery_man) {
+                $platform_fee_delivery = ($order->delivery_charge / 100) * $platform_fee_delivery_men;
+                $remainingDeliveryAmount = $order->delivery_charge - $platform_fee_delivery;
+
+                $currentDeliveryWalletAmount = $delivery_man->wallet_amount;
+                $newDeliveryWalletAmount = $currentDeliveryWalletAmount + $remainingDeliveryAmount;
+
+                $delivery_man->update([
+                    'wallet_amount' => $newDeliveryWalletAmount
+                ]);
+            }
+
+            $order->branch_payment_status = 'paid';
+            $order->delivery_payment_status = 'paid';
+        }
+
+
+
+        $order->save();
+
     }
 
 
